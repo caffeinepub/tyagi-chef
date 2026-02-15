@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build a \"Tyagi Chef\" hospitality management app to manage job openings, candidates, interviews, and clients.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Minimal modern logo mark (tyagi-chef-logo.dim_512x512.png)\n- App favicon icon derived from the logo style (tyagi-chef-favicon.dim_128x128.png)\n- Warm, professional hospitality staffing illustration (hospitality-staffing-illustration.dim_1600x900.png)",
+  "existing_features": [
+    {
+      "id": "feature-implement-internet-identity-login-and-a-basic-role-model-for-access-control-at-minimum-admin-and-staff-so-authenticated-users-can-manage-job-openings-candidates-interviews-and-clients",
+      "title": "Implement Internet Identity login and a basic role model for access control (at minimum: Admin and Staff) so authenticated users can manage job openings, candidates, interviews, and clients.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-react-ui-with-navigation-for-jobs-candidates-interviews-and-clients-each-with-list-view-search-filters-create-form-edit-form-and-detail-view",
+      "title": "Build a React UI with navigation for Jobs, Candidates, Interviews, and Clients, each with: list view (search + filters), create form, edit form, and detail view.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-dashboard-home-screen-that-summarizes-key-counts-e-g-open-jobs-new-candidates-interviews-scheduled-today-this-week-active-clients-and-provides-quick-links-to-create-a-new-job-candidate-interview-and-client",
+      "title": "Add a dashboard home screen that summarizes key counts (e.g., Open Jobs, New Candidates, Interviews Scheduled Today/This Week, Active Clients) and provides quick links to create a new Job, Candidate, Interview, and Client.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-consistent-creative-visual-theme-and-layout-for-the-app-typography-spacing-components-and-color-palette-suitable-for-a-professional-hospitality-staffing-tool-avoid-blue-purple-as-primary-colors",
+      "title": "Implement consistent, creative visual theme and layout for the app (typography, spacing, components, and color palette) suitable for a professional hospitality staffing tool; avoid blue/purple as primary colors.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-static-generated-brand-assets-and-wire-them-into-the-ui-app-icon-favicon-login-empty-state-illustration-by-placing-files-under-frontend-public-assets-generated-and-referencing-them-directly-from-the-frontend",
+      "title": "Add static generated brand assets and wire them into the UI (app icon/favicon + login/empty-state illustration) by placing files under frontend/public/assets/generated and referencing them directly from the frontend.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create hospitality management app for Tyagi Chef to manage job openings, candidates, interviews, and clients",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Create backend data models and CRUD APIs for Job Openings, including: title/role, client association (optional), location, salary/rate (optional), description/requirements, status (Open/Paused/Closed), createdAt/updatedAt.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Create backend data models and CRUD APIs for Candidates, including: full name, phone/email, skills/notes, source, status (New/Screening/Interviewing/Offered/Placed/Rejected), and optional linkage to a Job Opening they are being considered for.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Create backend data models and CRUD APIs for Interviews, including: candidate, job opening (optional if derived from candidate link), interview date/time, interview type (Phone/Video/In-person), interviewer name, location/meeting link, status (Scheduled/Completed/No-show/Cancelled), and outcome notes.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Create backend data models and CRUD APIs for Clients, including: company name, contact person, phone/email, address (optional), notes, and status (Active/Inactive).",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Tyagi Chef",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

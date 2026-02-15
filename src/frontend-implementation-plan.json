@@ -1,0 +1,284 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Tyagi Chef hospitality management app (frontend)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Add Internet Identity login UI, profile setup flow, and role-aware access gating for authenticated management screens.",
+      "acceptanceCriteria": [
+        "Users can sign in and sign out with Internet Identity.",
+        "Backend stores a role for each principal (default to Staff unless set by an Admin).",
+        "Non-authenticated users cannot create/update/delete any records.",
+        "UI clearly shows the signed-in user and provides sign-out."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the app shell with route structure and an authentication gate that requires Internet Identity before rendering any management screens. Use the authorization component patterns (Internet Identity + role-based access UI guidance) to support authenticated-only access; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AuthGate.tsx",
+          "operation": "create",
+          "description": "Implement an AuthGate wrapper that (1) redirects unauthenticated users to a login screen and (2) blocks protected pages until the actor + user profile queries have resolved. Use the authorization component guidance for preventing profile-setup modal flash and for handling authorization failures; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "create",
+          "description": "Create a login page that uses Internet Identity (via existing useInternetIdentity) and displays the generated illustration on the sign-in screen. Use the authorization component’s recommended login/logout behaviors including clearing React Query cache on logout; verify the component's usage instructions before implementing. Reference frontend/public/assets/generated/hospitality-staffing-illustration.dim_1600x900.png from the UI."
+        },
+        {
+          "path": "frontend/src/components/ProfileSetupDialog.tsx",
+          "operation": "create",
+          "description": "Create a first-login profile setup dialog that prompts for a human-readable name and saves it via getCallerUserProfile/saveCallerUserProfile. Use the authorization component’s profile setup guidance; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AppHeader.tsx",
+          "operation": "create",
+          "description": "Create a consistent header showing the current signed-in user's profile name (avoid displaying principal), current role (Admin/Staff), and a sign-out button. Use shadcn-ui composed components (do not edit immutable ui sources); verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useCurrentUser.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for current user profile and role (getCallerUserProfile, getCallerUserRole, isCallerAdmin) to power header display and access gating. Use the authorization component’s query enablement guidance; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AccessDeniedScreen.tsx",
+          "operation": "create",
+          "description": "Add an access denied screen to show when a signed-in user lacks required role permissions for an action/view. Use the authorization component’s access control UI guidance; verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Build CRUD UI modules for Jobs, Candidates, Interviews, and Clients with navigation, lists (search/filters), details, and create/edit forms.",
+      "acceptanceCriteria": [
+        "Users can navigate between the four main modules.",
+        "Each module supports create, view, edit, and remove/archive actions from the UI.",
+        "List views include search and at least one relevant filter (e.g., status).",
+        "Forms validate required fields and display user-friendly errors in English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/routes.tsx",
+          "operation": "create",
+          "description": "Define and export the application route map for Dashboard, Jobs, Candidates, Interviews, and Clients including list/detail/create/edit routes, ensuring no orphan pages. Use role-aware wrappers where appropriate. Use shadcn-ui composed components for navigation UI; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AppLayout.tsx",
+          "operation": "create",
+          "description": "Create a shared layout with persistent header + left navigation for the four modules and consistent spacing. Use Tailwind + shadcn-ui composition patterns (do not edit immutable ui sources); verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/api/jobs.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for job openings (list/get/create/update/delete) using the backend interface functions and query invalidation after mutations. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/api/candidates.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for candidates (list/get/create/update/delete) including optional link/unlink to a job opening via jobOpeningId. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/api/interviews.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for interviews (list/get/create/update/delete) including status/date filtering in the UI layer. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/api/clients.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for clients (list/get/create/update/delete). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/jobs/JobsListPage.tsx",
+          "operation": "create",
+          "description": "Implement Jobs list view with search by title and status filter, plus actions to view details, edit, and remove. Use shadcn-ui composed table/input/select components (no edits to immutable ui sources); verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/jobs/JobDetailPage.tsx",
+          "operation": "create",
+          "description": "Implement Job detail view showing all fields and providing edit/remove actions. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/jobs/JobCreatePage.tsx",
+          "operation": "create",
+          "description": "Implement Job create form with validation (required title/location/description/requirements, optional client/salary). Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/jobs/JobEditPage.tsx",
+          "operation": "create",
+          "description": "Implement Job edit form including status (Open/Paused/Closed) and optional client association. Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "operation": "create",
+          "description": "Implement Candidates list view with search (name/contact) and status filter, plus actions to view/edit/remove. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+          "operation": "create",
+          "description": "Implement Candidate detail view including linked job opening (if any) and notes/skills/source/status. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/candidates/CandidateCreatePage.tsx",
+          "operation": "create",
+          "description": "Implement Candidate create form with validation (required name and at least one contact method per UX decision), optional job link, and user-friendly English errors. Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/candidates/CandidateEditPage.tsx",
+          "operation": "create",
+          "description": "Implement Candidate edit form including status transitions and job link/unlink. Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/interviews/InterviewsListPage.tsx",
+          "operation": "create",
+          "description": "Implement Interviews list view with status filter and date range filter in the UI, plus actions to view/edit/remove. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/interviews/InterviewDetailPage.tsx",
+          "operation": "create",
+          "description": "Implement Interview detail view showing candidate, optional job opening, date/time, type, interviewer, location/meeting link, status, and outcome notes. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/interviews/InterviewCreatePage.tsx",
+          "operation": "create",
+          "description": "Implement Interview create form with validation (candidate required) and selection inputs for interview type, plus optional job opening selection. Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/interviews/InterviewEditPage.tsx",
+          "operation": "create",
+          "description": "Implement Interview edit form including status and outcome notes. Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/clients/ClientsListPage.tsx",
+          "operation": "create",
+          "description": "Implement Clients list view with search (company/contact) and status filter, plus actions to view/edit/remove. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/clients/ClientDetailPage.tsx",
+          "operation": "create",
+          "description": "Implement Client detail view showing contact info, address (optional), notes, and status. Use shadcn-ui composed components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/clients/ClientCreatePage.tsx",
+          "operation": "create",
+          "description": "Implement Client create form with validation (company/contact/phone/email required per UX decision) and user-friendly English errors. Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/clients/ClientEditPage.tsx",
+          "operation": "create",
+          "description": "Implement Client edit form including status (Active/Inactive). Use shadcn-ui composed form components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/EmptyState.tsx",
+          "operation": "create",
+          "description": "Add a reusable empty state component used by lists when no records match filters; include the generated illustration when appropriate. Use shadcn-ui composed components; verify the component's usage instructions before implementing. Reference frontend/public/assets/generated/hospitality-staffing-illustration.dim_1600x900.png from the UI."
+        },
+        {
+          "path": "frontend/src/utils/validation.ts",
+          "operation": "create",
+          "description": "Centralize basic form validation helpers to ensure required fields and user-friendly English error messages are consistent across modules."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Add a post-login dashboard with summary metrics and quick links to create new records, updating via React Query invalidation/refetch.",
+      "acceptanceCriteria": [
+        "Dashboard loads after login and shows at least 4 summary metrics.",
+        "Quick action buttons navigate to the relevant create forms.",
+        "Metrics update after creating/updating records (via React Query invalidation/refetch)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/DashboardPage.tsx",
+          "operation": "create",
+          "description": "Create a dashboard page that loads after login, computes at least 4 summary metrics from React Query list data (Open Jobs, New Candidates, Interviews scheduled today/this week, Active Clients), and provides quick links to the create forms. Use shadcn-ui composed card/button components; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the dashboard as the default authenticated route and ensure navigation links include Dashboard plus Jobs, Candidates, Interviews, and Clients."
+        },
+        {
+          "path": "frontend/src/api/queryKeys.ts",
+          "operation": "create",
+          "description": "Define shared React Query keys for jobs/candidates/interviews/clients so mutations can consistently invalidate/refetch dashboard metrics and module lists."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Apply a consistent professional theme and layout using Tailwind + component composition, with a warm palette (no blue/purple primary).",
+      "acceptanceCriteria": [
+        "All screens share a consistent header/navigation and spacing system.",
+        "Theme uses a cohesive palette that is not primarily blue/purple.",
+        "UI uses Tailwind + existing component library composition patterns (no edits to immutable UI component sources)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.css",
+          "operation": "modify",
+          "description": "Adjust CSS variables used by the Tailwind/shadcn theme to a warm hospitality-appropriate palette (e.g., warm neutrals + amber/green accents), ensuring primary is not blue/purple and typography/spacing remains consistent across screens."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Confirm Tailwind theme tokens align with the updated CSS variables and extend any needed utility tokens for consistent layout spacing/typography without introducing new global stylesheet entry points."
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Fix the global stylesheet import to reference the existing frontend/index.css so the shared theme applies to all screens."
+        },
+        {
+          "path": "frontend/src/components/AppLayout.tsx",
+          "operation": "modify",
+          "description": "Ensure consistent page scaffolding (container widths, padding, section spacing) and reuse composed shadcn-ui components (do not edit immutable ui sources); verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Add generated brand assets (logo, favicon, illustration) to frontend/public/assets/generated and wire them into the UI without backend involvement.",
+      "acceptanceCriteria": [
+        "Generated images are stored in frontend/public/assets/generated.",
+        "App displays the logo/icon in the header and uses the illustration on the sign-in or empty state screen.",
+        "No backend endpoints are used to serve these images."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/tyagi-chef-logo.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the generated brand logo asset at the required path so it can be referenced directly by the frontend."
+        },
+        {
+          "path": "frontend/public/assets/generated/tyagi-chef-favicon.dim_128x128.png",
+          "operation": "create",
+          "description": "Add the generated favicon image asset at the required path so it can be referenced directly by the frontend."
+        },
+        {
+          "path": "frontend/public/assets/generated/hospitality-staffing-illustration.dim_1600x900.png",
+          "operation": "create",
+          "description": "Add the generated hospitality staffing illustration asset at the required path so it can be referenced directly by the frontend."
+        },
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Wire the favicon by referencing frontend/public/assets/generated/tyagi-chef-favicon.dim_128x128.png in the document head."
+        },
+        {
+          "path": "frontend/src/components/AppHeader.tsx",
+          "operation": "modify",
+          "description": "Display the brand mark in the header by referencing frontend/public/assets/generated/tyagi-chef-logo.dim_512x512.png. Use composed shadcn-ui components (no edits to immutable ui sources); verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the sign-in screen uses frontend/public/assets/generated/hospitality-staffing-illustration.dim_1600x900.png for a branded login experience. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

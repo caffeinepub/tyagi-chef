@@ -1,0 +1,191 @@
+{
+  "kind": "build_request",
+  "title": "Tyagi Chef hospitality management app (jobs, candidates, interviews, clients)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Implement Internet Identity login and a basic role model for access control (at minimum: Admin and Staff) so authenticated users can manage job openings, candidates, interviews, and clients.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "tyagi chef hospitality management ke liye - job opening,  candidate, interview, and client manage karney ke liye app chaiye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can sign in and sign out with Internet Identity.",
+        "Backend stores a role for each principal (default to Staff unless set by an Admin).",
+        "Non-authenticated users cannot create/update/delete any records.",
+        "UI clearly shows the signed-in user and provides sign-out."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Create backend data models and CRUD APIs for Job Openings, including: title/role, client association (optional), location, salary/rate (optional), description/requirements, status (Open/Paused/Closed), createdAt/updatedAt.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "job opening ... manage karney ke liye app chaiye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes create/read/list/update/archive (or delete) operations for job openings.",
+        "Job openings can be filtered by status and searched by title/role.",
+        "All records include createdAt and updatedAt timestamps."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Create backend data models and CRUD APIs for Candidates, including: full name, phone/email, skills/notes, source, status (New/Screening/Interviewing/Offered/Placed/Rejected), and optional linkage to a Job Opening they are being considered for.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "candidate ... manage karney ke liye app chaiye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes create/read/list/update/archive (or delete) operations for candidates.",
+        "Candidates can be filtered by status and searched by name/contact.",
+        "A candidate can be linked/unlinked to a job opening."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Create backend data models and CRUD APIs for Interviews, including: candidate, job opening (optional if derived from candidate link), interview date/time, interview type (Phone/Video/In-person), interviewer name, location/meeting link, status (Scheduled/Completed/No-show/Cancelled), and outcome notes.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "interview ... manage karney ke liye app chaiye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes create/read/list/update/archive (or delete) operations for interviews.",
+        "Interviews can be listed by date range and filtered by status.",
+        "Interview records reference an existing candidate (required)."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Create backend data models and CRUD APIs for Clients, including: company name, contact person, phone/email, address (optional), notes, and status (Active/Inactive).",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "client manage karney ke liye app chaiye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes create/read/list/update/archive (or delete) operations for clients.",
+        "Clients can be searched by company name/contact.",
+        "Job openings can optionally reference a client."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Build a React UI with navigation for Jobs, Candidates, Interviews, and Clients, each with: list view (search + filters), create form, edit form, and detail view.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can navigate between the four main modules.",
+        "Each module supports create, view, edit, and remove/archive actions from the UI.",
+        "List views include search and at least one relevant filter (e.g., status).",
+        "Forms validate required fields and display user-friendly errors in English."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Add a dashboard home screen that summarizes key counts (e.g., Open Jobs, New Candidates, Interviews Scheduled Today/This Week, Active Clients) and provides quick links to create a new Job, Candidate, Interview, and Client.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dashboard loads after login and shows at least 4 summary metrics.",
+        "Quick action buttons navigate to the relevant create forms.",
+        "Metrics update after creating/updating records (via React Query invalidation/refetch)."
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Implement consistent, creative visual theme and layout for the app (typography, spacing, components, and color palette) suitable for a professional hospitality staffing tool; avoid blue/purple as primary colors.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All screens share a consistent header/navigation and spacing system.",
+        "Theme uses a cohesive palette that is not primarily blue/purple.",
+        "UI uses Tailwind + existing component library composition patterns (no edits to immutable UI component sources)."
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Add static generated brand assets and wire them into the UI (app icon/favicon + login/empty-state illustration) by placing files under frontend/public/assets/generated and referencing them directly from the frontend.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Generated images are stored in frontend/public/assets/generated.",
+        "App displays the logo/icon in the header and uses the illustration on the sign-in or empty state screen.",
+        "No backend endpoints are used to serve these images."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor (all logic in backend/main.mo).",
+    "Do not edit files under frontend/src/components/ui or other immutable paths; compose components instead.",
+    "Use English for all user-facing UI text."
+  ],
+  "nonGoals": [
+    "Payroll, invoicing, and accounting features are out of scope.",
+    "Real-time chat/notifications and email/SMS sending are out of scope.",
+    "Third-party auth providers other than Internet Identity are out of scope."
+  ],
+  "imageRequirements": {
+    "required": [
+      "Minimal modern logo mark (tyagi-chef-logo.dim_512x512.png)",
+      "App favicon icon derived from the logo style (tyagi-chef-favicon.dim_128x128.png)",
+      "Warm, professional hospitality staffing illustration (hospitality-staffing-illustration.dim_1600x900.png)"
+    ],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [
+      "Build an app for Tyagi Chef to manage hospitality recruitment: job openings, candidates, interviews, and clients."
+    ],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Use English for user-facing UI text."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

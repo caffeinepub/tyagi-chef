@@ -1,56 +1,62 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix candidate status badge crash when status is missing/unknown",
+  "title": "Admin-only frontend gate with stable unauthorized handling",
   "requirements": [
     {
-      "id": "REQ-19",
-      "summary": "Make candidate status label/badge rendering resilient to undefined/unknown statuses across candidate list and detail screens to prevent `toUpperCase()` runtime crashes.",
+      "id": "REQ-22",
+      "summary": "Gate the entire UI to Admin users; show an Access Denied screen with logout for non-Admins and block all protected routes.",
       "acceptanceCriteria": [
-        "Creating a new candidate no longer crashes the UI.",
-        "CandidatesListPage and CandidateDetailPage do not call `toUpperCase()` on an undefined value (or otherwise throw) even if a candidate record has a missing/unknown status.",
-        "When status is missing/unknown, the UI shows a safe fallback label (English text) instead of crashing."
+        "When a non-Admin user logs in, the app does not render the main navigation (AppLayout/sidebar) and instead shows an access denied view.",
+        "The access denied view is user-facing English text (e.g., \"Access Denied\") and provides a clear way to log out.",
+        "Admin users can access all existing routes (/dashboard, /jobs, /candidates, /interviews, /clients and their sub-routes) as before.",
+        "If a non-Admin user attempts to navigate directly to a protected route URL, they still see the access denied view rather than the page content."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/utils/candidateStatusPresentation.ts",
-          "operation": "create",
-          "description": "Create a small utility that converts an unknown/possibly-missing candidate status into a safe badge presentation (label + shadcn Badge variant), using a fallback label (e.g., \"UNKNOWN\") when the status is undefined/unrecognized."
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Implement an app-wide Admin gate at the root route component: use the authorization component's role-based capability (via backend admin-check method already exposed to the frontend) to decide whether to render AppLayout + routes (Admin) or AccessDeniedScreen (non-Admin). Ensure AppLayout/sidebar never mount for non-Admins and that direct navigation to any protected route still results in AccessDeniedScreen. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "path": "frontend/src/components/AccessDeniedScreen.tsx",
           "operation": "modify",
-          "description": "Replace the local `getStatusBadge` logic to use the new status presentation utility so the list never calls `toUpperCase()` on an undefined/unknown status; ensure the rendered Badge always has a safe label."
+          "description": "Update the Access Denied view to provide a clear Logout action (using the existing Internet Identity clear + React Query cache clear pattern), and remove/avoid navigation actions that imply access to protected pages. Keep all user-facing text in English. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Replace the local `getStatusBadge` logic to use the new status presentation utility so the detail view never calls `toUpperCase()` on an undefined/unknown status; ensure the rendered Badge always has a safe label."
+          "description": "Adjust admin/role/profile query hooks to support the Admin gate: (1) ensure the admin-check query is available to RootComponent, (2) add an optional enabled flag for user-profile fetching so the app can avoid calling profile APIs for non-Admins, and (3) disable aggressive retries for authorization-related queries to prevent loops. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-20",
-      "summary": "Add frontend-side verification and graceful handling so newly created or legacy candidates missing status never cause runtime errors, while surfacing a safe fallback in the UI.",
+      "id": "REQ-23",
+      "summary": "Harden frontend data fetching/mutations so authorization traps do not crash the app or cause infinite loading; instead route users to Access Denied.",
       "acceptanceCriteria": [
-        "New candidates created via the UI have a non-empty status when fetched from the backend.",
-        "If any existing/legacy candidate data is missing status, the UI still renders candidate list/detail screens without errors."
+        "When the backend returns an authorization trap for any query/mutation while the user is non-Admin, the UI remains responsive and displays the access denied view rather than crashing.",
+        "No infinite loading state occurs when a non-Admin user is logged in and blocked from access."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "operation": "modify",
-          "description": "After successful creation, perform a lightweight fetch/verification of the created candidate before/after navigation (using existing actor access patterns) to confirm `status` is present; if missing, do not crash—optionally warn via toast/console while continuing with navigation and relying on the safe fallback rendering."
+          "path": "frontend/src/utils/isAuthorizationError.ts",
+          "operation": "create",
+          "description": "Add a small utility that detects authorization failures from backend calls (e.g., trap messages containing \"Unauthorized\") so the Admin gate and key screens can consistently interpret errors and switch to AccessDeniedScreen without throwing. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure any status-dependent UI logic (including status filter comparisons and badge rendering) remains safe even when candidate status is missing/unknown by relying on the shared status presentation utility and avoiding assumptions about runtime status shape."
+          "description": "Update the root gating logic to treat authorization-related errors from the admin-check and/or profile queries as 'non-Admin' and render AccessDeniedScreen (instead of propagating errors or rendering partial UI). Ensure the gate exposes a stable loading state and never results in a blank screen. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+          "path": "frontend/src/main.tsx",
           "operation": "modify",
-          "description": "Ensure any status-dependent UI logic remains safe even when candidate status is missing/unknown by relying on the shared status presentation utility and avoiding assumptions about runtime status shape."
+          "description": "Configure React Query defaults (or targeted query options) to avoid infinite retry/loading loops on authorization traps (e.g., disable retries for queries by default or for key auth/admin queries), while keeping the UI responsive under errors. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure key queries used during app bootstrap (admin-check, role, current profile) have stable error behavior under traps (e.g., retry disabled, predictable loading flags), and that pages are not mounted/fetched when the Admin gate denies access. Verify the component's usage instructions before implementing."
         }
       ]
     }

@@ -1,65 +1,78 @@
 {
   "kind": "build_request",
-  "title": "Fix New Candidate runtime error: Cannot read properties of undefined (reading 'toUpperCase')",
-  "priority": "high",
+  "title": "Restrict app access to Admin users only",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-19",
-      "text": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
+      "id": "REQ-21",
+      "text": "Restrict all backend APIs to Admin-only access so that only Admin users can view, create, update, or delete any Jobs, Candidates, Interviews, Clients, and UserProfile records.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "ye app kewal admin hi use kar sake"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Any call to Job Opening APIs (create/get/list/update/delete/getJobOpeningsForClient) traps unless the caller is an Admin.",
+        "Any call to Candidate APIs (create/get/list/update/delete) traps unless the caller is an Admin.",
+        "Any call to Interview APIs (create/get/list/update/delete) traps unless the caller is an Admin.",
+        "Any call to Client APIs (create/get/list/update/delete/getClientWithJobOpenings) traps unless the caller is an Admin.",
+        "Any call to user profile APIs (getCallerUserProfile/getUserProfile/saveCallerUserProfile) traps unless the caller is an Admin.",
+        "Admin users can continue to use all APIs successfully."
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "text": "Add an Admin-only frontend gate: if a logged-in user is not an Admin (as determined by the backend), show an Access Denied screen instead of the main app layout/routes and allow the user to log out.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-6"
         ],
         "quotes": [
-          "new candidate me error aa rha hai- Cannot read properties of undefined (reading 'toUpperCase')"
+          "ye app kewal admin hi use kar sake"
         ]
       },
       "acceptanceCriteria": [
-        "Creating a new candidate no longer crashes the UI.",
-        "CandidatesListPage and CandidateDetailPage do not call `toUpperCase()` on an undefined value (or otherwise throw) even if a candidate record has a missing/unknown status.",
-        "When status is missing/unknown, the UI shows a safe fallback label (English text) instead of crashing."
+        "When a non-Admin user logs in, the app does not render the main navigation (AppLayout/sidebar) and instead shows an access denied view.",
+        "The access denied view is user-facing English text (e.g., \"Access Denied\") and provides a clear way to log out.",
+        "Admin users can access all existing routes (/dashboard, /jobs, /candidates, /interviews, /clients and their sub-routes) as before.",
+        "If a non-Admin user attempts to navigate directly to a protected route URL, they still see the access denied view rather than the page content."
       ]
     },
     {
-      "id": "REQ-20",
-      "text": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
-      "target": "both",
+      "id": "REQ-23",
+      "text": "Ensure frontend query/mutation error handling remains stable under Admin-only backend authorization (e.g., unauthorized traps) without causing blank screens or runtime crashes.",
+      "target": "frontend",
       "source": {
         "messageIds": [
           "msg-6"
         ],
         "quotes": [
-          "new candidate me error aa rha hai- Cannot read properties of undefined (reading 'toUpperCase')"
+          "ye app kewal admin hi use kar sake"
         ]
       },
       "acceptanceCriteria": [
-        "New candidates created via the UI have a non-empty status when fetched from the backend.",
-        "If any existing/legacy candidate data is missing status, the UI still renders candidate list/detail screens without errors."
+        "When the backend returns an authorization trap for any query/mutation while the user is non-Admin, the UI remains responsive and displays the access denied view rather than crashing.",
+        "No infinite loading state occurs when a non-Admin user is logged in and blocked from access."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (read-only).",
-    "Do not edit any files listed in frontend.immutablePaths (compose existing hooks/components instead).",
-    "Backend changes must respect the single-actor architecture (all Motoko logic in backend/main.mo). Create backend/migration.mo only if an upgrade is required to handle existing persisted state."
+    "Backend must remain a single-actor Motoko canister (all logic in backend/main.mo).",
+    "Do not edit files under frontend/src/components/ui or any other frontend immutable paths listed in SYSTEM_CONTEXT.",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Do not add new candidate fields or change candidate business logic beyond what is required to prevent the runtime error.",
-    "Do not change the app visual theme or navigation as part of this fix."
+    "Implementing a new authentication provider (only Internet Identity is used).",
+    "Adding new roles beyond the existing role model; the change is to restrict usage to Admin only.",
+    "Building a full admin management UI for promoting/demoting users (unless it already exists)."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

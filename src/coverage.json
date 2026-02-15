@@ -1,43 +1,51 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T15:46:23.259Z",
+  "generatedAt": "2026-02-15T16:01:30.610Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
+    "total": 3,
     "implemented": 2,
     "items": [
       {
-        "id": "REQ-19",
-        "summary": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
+        "id": "REQ-21",
+        "summary": "Restrict all backend APIs to Admin-only access so that only Admin users can view, create, update, or delete any Jobs, Candidates, Interviews, Clients, and UserProfile records.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-22",
+        "summary": "Add an Admin-only frontend gate: if a logged-in user is not an Admin (as determined by the backend), show an Access Denied screen instead of the main app layout/routes and allow the user to log out.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/candidateStatusPresentation.ts",
-          "frontend/src/pages/candidates/CandidatesListPage.tsx",
-          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/components/AccessDeniedScreen.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/utils/candidateStatusPresentation.ts",
-          "frontend/src/pages/candidates/CandidatesListPage.tsx",
-          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/components/AccessDeniedScreen.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
-        "id": "REQ-20",
-        "summary": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
+        "id": "REQ-23",
+        "summary": "Ensure frontend query/mutation error handling remains stable under Admin-only backend authorization (e.g., unauthorized traps) without causing blank screens or runtime crashes.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "frontend/src/pages/candidates/CandidatesListPage.tsx",
-          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
+          "frontend/src/utils/isAuthorizationError.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/main.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "frontend/src/pages/candidates/CandidatesListPage.tsx",
-          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
+          "frontend/src/utils/isAuthorizationError.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       }
     ]
@@ -48,10 +56,11 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-    "frontend/src/pages/candidates/CandidateDetailPage.tsx",
-    "frontend/src/pages/candidates/CandidatesListPage.tsx",
-    "frontend/src/utils/candidateStatusPresentation.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/AccessDeniedScreen.tsx",
+    "frontend/src/hooks/queryKeys.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/utils/isAuthorizationError.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

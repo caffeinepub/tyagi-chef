@@ -18,5 +18,6 @@ export const queryKeys = {
   clients: {
     all: ['clients'],
     detail: (id: bigint | undefined) => ['clients', id?.toString()],
+    withJobs: (id: bigint | undefined) => ['clients', id?.toString(), 'withJobs'],
   },
 };

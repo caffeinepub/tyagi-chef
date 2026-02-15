@@ -2,12 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-fix-the-new-candidate-flow-runtime-crash-cannot-read-properties-of-undefined-reading-touppercase-by-making-candidate-status-label-badge-rendering-resilient-to-missing-or-unexpected-status-values-e-g-undefined-in-all-candidate-ui-surfaces-that-call-touppercase-at-minimum-candidates-list-and-candidate-detail-pages",
-      "featureTitle": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
+      "featureId": "feature-add-an-admin-only-frontend-gate-if-a-logged-in-user-is-not-an-admin-as-determined-by-the-backend-show-an-access-denied-screen-instead-of-the-main-app-layout-routes-and-allow-the-user-to-log-out",
+      "featureTitle": "Add an Admin-only frontend gate: if a logged-in user is not an Admin (as determined by the backend), show an Access Denied screen instead of the main app layout/routes and allow the user to log out.",
       "files": [
-        "frontend/src/pages/candidates/CandidateDetailPage.tsx",
-        "frontend/src/pages/candidates/CandidatesListPage.tsx",
-        "frontend/src/utils/candidateStatusPresentation.ts"
+        "frontend/src/App.tsx",
+        "frontend/src/components/AccessDeniedScreen.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,17 +18,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-19"
+        "REQ-22"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-verify-end-to-end-that-the-backend-always-returns-a-populated-status-for-candidate-records-created-via-createcandidate-and-if-any-data-inconsistencies-can-still-surface-in-the-frontend-e-g-legacy-records-or-decoding-edge-cases-ensure-the-frontend-gracefully-handles-them-without-runtime-errors",
-      "featureTitle": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
+      "featureId": "feature-ensure-frontend-query-mutation-error-handling-remains-stable-under-admin-only-backend-authorization-e-g-unauthorized-traps-without-causing-blank-screens-or-runtime-crashes",
+      "featureTitle": "Ensure frontend query/mutation error handling remains stable under Admin-only backend authorization (e.g., unauthorized traps) without causing blank screens or runtime crashes.",
       "files": [
-        "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-        "frontend/src/pages/candidates/CandidateDetailPage.tsx",
-        "frontend/src/pages/candidates/CandidatesListPage.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/utils/isAuthorizationError.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -39,7 +39,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-20"
+        "REQ-23"
       ],
       "confidence": "high"
     }

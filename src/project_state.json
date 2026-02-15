@@ -1,16 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
+  "projectStateVersion": 15,
   "summary": "Build a \"Tyagi Chef\" hospitality management app to manage job openings, candidates, interviews, and clients.",
   "architectural_notes": [
     "Ensure Job Opening stores a clientId reference to a Client (and expose it via CRUD APIs) so a Job Opening can be linked to a Client.",
-    "Extend Client data model/API to store staffing requirements (e.g., list of roles/positions needed, quantity, notes) and expose via Client CRUD and UI forms/detail views."
+    "Extend Client data model/API to store staffing requirements (e.g., list of roles/positions needed, quantity, notes) and expose via Client CRUD and UI forms/detail views.",
+    "Update access control/role model to enforce Admin-only usage across the entire app (UI routes + backend APIs)."
   ],
   "known_issues": [
     "UI error: <Select.Item /> has an empty-string value prop; Select uses empty string to clear selection and show placeholder, so items must have non-empty values.",
     "New Candidate flow runtime error: \"Cannot read properties of undefined (reading 'toUpperCase')\" occurs when creating a candidate (likely due to calling toUpperCase on an undefined field)."
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-implement-internet-identity-login-and-a-basic-role-model-for-access-control-at-minimum-admin-and-staff-so-authenticated-users-can-manage-job-openings-candidates-interviews-and-clients",
@@ -139,6 +140,22 @@
         "REQ-20"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-an-admin-only-frontend-gate-if-a-logged-in-user-is-not-an-admin-as-determined-by-the-backend-show-an-access-denied-screen-instead-of-the-main-app-layout-routes-and-allow-the-user-to-log-out",
+      "title": "Add an Admin-only frontend gate: if a logged-in user is not an Admin (as determined by the backend), show an Access Denied screen instead of the main app layout/routes and allow the user to log out.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-frontend-query-mutation-error-handling-remains-stable-under-admin-only-backend-authorization-e-g-unauthorized-traps-without-causing-blank-screens-or-runtime-crashes",
+      "title": "Ensure frontend query/mutation error handling remains stable under Admin-only backend authorization (e.g., unauthorized traps) without causing blank screens or runtime crashes.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -190,6 +207,20 @@
       "id": "AR-8",
       "summary": "Add ability to record which staff roles/positions a Client needs (client staffing requirements), including UI and backend fields.",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Restrict app access so only Admin users can use the app (no Staff access).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Restrict all backend APIs to Admin-only access so that only Admin users can view, create, update, or delete any Jobs, Candidates, Interviews, Clients, and UserProfile records.",
+      "reqIds": [
+        "REQ-21"
+      ],
       "status": "pending"
     }
   ],

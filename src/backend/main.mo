@@ -127,30 +127,30 @@ actor {
 
   // User Profile API
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can view profiles");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can view profiles");
     };
     userProfiles.get(caller);
   };
 
   public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
-    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Can only view your own profile");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can view profiles");
     };
     userProfiles.get(user);
   };
 
   public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can save profiles");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can save profiles");
     };
     userProfiles.add(caller, profile);
   };
 
   // Job Openings API
   public shared ({ caller }) func createJobOpening(title : Text, clientId : ?Nat, location : Text, salary : ?Text, description : Text, requirements : Text) : async Nat {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can create job openings");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can create job openings");
     };
 
     // Validate clientId exists if provided
@@ -183,8 +183,8 @@ actor {
   };
 
   public query ({ caller }) func getJobOpening(id : Nat) : async JobOpening {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view job openings");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view job openings");
     };
     switch (jobOpenings.get(id)) {
       case (null) { Runtime.trap("Job opening not found") };
@@ -193,15 +193,15 @@ actor {
   };
 
   public query ({ caller }) func getAllJobOpenings() : async [JobOpening] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view job openings");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view job openings");
     };
     jobOpenings.values().toArray().sort(JobOpening.compareByUpdatedAt);
   };
 
   public shared ({ caller }) func updateJobOpening(id : Nat, title : Text, clientId : ?Nat, location : Text, salary : ?Text, description : Text, requirements : Text, status : JobStatus) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can update job openings");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can update job openings");
     };
 
     // Validate clientId exists if provided
@@ -243,8 +243,8 @@ actor {
   };
 
   public query ({ caller }) func getJobOpeningsForClient(clientId : Nat) : async [JobOpening] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view job openings");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view job openings");
     };
 
     // Validate client exists
@@ -259,8 +259,8 @@ actor {
 
   // Candidate API
   public shared ({ caller }) func createCandidate(fullName : Text, phone : Text, email : Text, skills : Text, notes : Text, source : Text, jobOpeningId : ?Nat) : async Nat {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can create candidates");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can create candidates");
     };
 
     // Validate jobOpeningId exists if provided
@@ -294,8 +294,8 @@ actor {
   };
 
   public query ({ caller }) func getCandidate(id : Nat) : async Candidate {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view candidates");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view candidates");
     };
     switch (candidates.get(id)) {
       case (null) { Runtime.trap("Candidate not found") };
@@ -304,15 +304,15 @@ actor {
   };
 
   public query ({ caller }) func getAllCandidates() : async [Candidate] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view candidates");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view candidates");
     };
     candidates.values().toArray().sort(Candidate.compareByUpdatedAt);
   };
 
   public shared ({ caller }) func updateCandidate(id : Nat, fullName : Text, phone : Text, email : Text, skills : Text, notes : Text, source : Text, status : CandidateStatus, jobOpeningId : ?Nat) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can update candidates");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can update candidates");
     };
 
     // Validate jobOpeningId exists if provided
@@ -356,8 +356,8 @@ actor {
 
   // Interview API
   public shared ({ caller }) func createInterview(candidateId : Nat, jobOpeningId : ?Nat, interviewDate : Int, interviewType : InterviewType, interviewerName : Text, location : Text) : async Nat {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can create interviews");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can create interviews");
     };
 
     // Validate candidateId exists
@@ -396,8 +396,8 @@ actor {
   };
 
   public query ({ caller }) func getInterview(id : Nat) : async Interview {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view interviews");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view interviews");
     };
     switch (interviews.get(id)) {
       case (null) { Runtime.trap("Interview not found") };
@@ -406,15 +406,15 @@ actor {
   };
 
   public query ({ caller }) func getAllInterviews() : async [Interview] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view interviews");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view interviews");
     };
     interviews.values().toArray().sort(Interview.compareByUpdatedAt);
   };
 
   public shared ({ caller }) func updateInterview(id : Nat, candidateId : Nat, jobOpeningId : ?Nat, interviewDate : Int, interviewType : InterviewType, interviewerName : Text, location : Text, status : InterviewStatus, outcome : Text) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can update interviews");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can update interviews");
     };
 
     // Validate candidateId exists
@@ -463,8 +463,8 @@ actor {
 
   // Client API
   public shared ({ caller }) func createClient(companyName : Text, contactPerson : Text, phone : Text, email : Text, address : Text, notes : Text, staffingRequirements : [Text]) : async Nat {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can create clients");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can create clients");
     };
     let id = nextClientId;
     let now = Time.now();
@@ -487,8 +487,8 @@ actor {
   };
 
   public query ({ caller }) func getClient(id : Nat) : async Client {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view clients");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view clients");
     };
     switch (clients.get(id)) {
       case (null) { Runtime.trap("Client not found") };
@@ -497,15 +497,15 @@ actor {
   };
 
   public query ({ caller }) func getAllClients() : async [Client] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view clients");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view clients");
     };
     clients.values().toArray().sort(Client.compareByUpdatedAt);
   };
 
   public shared ({ caller }) func updateClient(id : Nat, companyName : Text, contactPerson : Text, phone : Text, email : Text, address : Text, notes : Text, status : EntityStatus, staffingRequirements : [Text]) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can update clients");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can update clients");
     };
     switch (clients.get(id)) {
       case (null) { Runtime.trap("Client not found") };
@@ -537,8 +537,8 @@ actor {
   };
 
   public query ({ caller }) func getClientWithJobOpenings(id : Nat) : async ClientWithJobOpenings {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only staff can view clients");
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view clients");
     };
 
     let client = switch (clients.get(id)) {

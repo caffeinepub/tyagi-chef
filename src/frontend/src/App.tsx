@@ -1,6 +1,6 @@
 import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from './hooks/useQueries';
+import { useGetCallerUserProfile, useIsCallerAdmin } from './hooks/useQueries';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import JobsListPage from './pages/jobs/JobsListPage';
@@ -20,21 +20,48 @@ import ClientDetailPage from './pages/clients/ClientDetailPage';
 import ClientCreatePage from './pages/clients/ClientCreatePage';
 import ClientEditPage from './pages/clients/ClientEditPage';
 import AppLayout from './components/AppLayout';
-import AuthGate from './components/AuthGate';
+import AccessDeniedScreen from './components/AccessDeniedScreen';
 import ProfileSetupDialog from './components/ProfileSetupDialog';
 import { Toaster } from './components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
+import { isAuthorizationError } from './utils/isAuthorizationError';
 
 function RootComponent() {
   const { identity } = useInternetIdentity();
-  const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
+  const { data: isAdmin, isLoading: adminLoading, error: adminError } = useIsCallerAdmin();
+  const { data: userProfile, isLoading: profileLoading, isFetched: profileFetched } = useGetCallerUserProfile();
   const isAuthenticated = !!identity;
 
+  // Show login page if not authenticated
   if (!isAuthenticated) {
     return <LoginPage />;
   }
 
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
+  // Show loading state while checking admin status
+  if (adminLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If admin check failed with authorization error or returned false, show access denied
+  const isAuthError = adminError && isAuthorizationError(adminError);
+  if (isAuthError || isAdmin === false) {
+    return <AccessDeniedScreen />;
+  }
+
+  // Only proceed if user is confirmed admin
+  if (isAdmin !== true) {
+    return <AccessDeniedScreen />;
+  }
+
+  // Check if profile setup is needed (only for admins)
+  const showProfileSetup = !profileLoading && profileFetched && userProfile === null;
 
   return (
     <>

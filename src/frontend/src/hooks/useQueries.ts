@@ -61,6 +61,7 @@ export function useGetCallerUserRole() {
       return actor.getCallerUserRole();
     },
     enabled: !!actor && !actorFetching,
+    retry: false,
   });
 }
 
@@ -74,6 +75,7 @@ export function useIsCallerAdmin() {
       return actor.isCallerAdmin();
     },
     enabled: !!actor && !actorFetching,
+    retry: false,
   });
 }
 
@@ -88,6 +90,7 @@ export function useGetAllJobOpenings() {
       return actor.getAllJobOpenings();
     },
     enabled: !!actor && !isFetching,
+    retry: false,
   });
 }
 
@@ -101,6 +104,7 @@ export function useGetJobOpening(id: bigint | undefined) {
       return actor.getJobOpening(id);
     },
     enabled: !!actor && !isFetching && !!id,
+    retry: false,
   });
 }
 
@@ -114,6 +118,7 @@ export function useGetJobOpeningsForClient(clientId: bigint | undefined) {
       return actor.getJobOpeningsForClient(clientId);
     },
     enabled: !!actor && !isFetching && !!clientId,
+    retry: false,
   });
 }
 
@@ -212,6 +217,7 @@ export function useGetAllCandidates() {
       return actor.getAllCandidates();
     },
     enabled: !!actor && !isFetching,
+    retry: false,
   });
 }
 
@@ -225,6 +231,7 @@ export function useGetCandidate(id: bigint | undefined) {
       return actor.getCandidate(id);
     },
     enabled: !!actor && !isFetching && !!id,
+    retry: false,
   });
 }
 
@@ -321,6 +328,7 @@ export function useGetAllInterviews() {
       return actor.getAllInterviews();
     },
     enabled: !!actor && !isFetching,
+    retry: false,
   });
 }
 
@@ -334,6 +342,7 @@ export function useGetInterview(id: bigint | undefined) {
       return actor.getInterview(id);
     },
     enabled: !!actor && !isFetching && !!id,
+    retry: false,
   });
 }
 
@@ -428,6 +437,7 @@ export function useGetAllClients() {
       return actor.getAllClients();
     },
     enabled: !!actor && !isFetching,
+    retry: false,
   });
 }
 
@@ -441,6 +451,7 @@ export function useGetClient(id: bigint | undefined) {
       return actor.getClient(id);
     },
     enabled: !!actor && !isFetching && !!id,
+    retry: false,
   });
 }
 
@@ -523,5 +534,19 @@ export function useDeleteClient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.clients.all });
     },
+  });
+}
+
+export function useGetClientWithJobOpenings(id: bigint | undefined) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: queryKeys.clients.withJobs(id),
+    queryFn: async () => {
+      if (!actor || !id) return null;
+      return actor.getClientWithJobOpenings(id);
+    },
+    enabled: !!actor && !isFetching && !!id,
+    retry: false,
   });
 }

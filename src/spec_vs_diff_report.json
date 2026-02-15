@@ -1,82 +1,47 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T14:48:20.077Z",
-  "summary": "Diff adds a Motoko backend actor with data types for jobs, candidates, interviews, clients, and user profiles plus an authorization/access-control mixin; frontend adds II-based auth hook, React Router navigation/pages scaffolding, themed layout/header/sidebar, React Query hooks for backend calls, and UI components including empty-state illustration and profile setup dialog. Several requested capabilities may exist in omitted/truncated files, so only clear deviations are flagged.",
-  "missing_requirements": [],
-  "hallucinated_features": [
+  "generatedAt": "2026-02-15T15:03:33.721Z",
+  "summary": "The diff adds a reusable optional-select utility with a non-empty sentinel value and updates the six specified pages to import it, while keeping optional submit behavior (sending null when state is empty string). However, the provided (truncated) page diffs do not show the actual Select/SelectItem JSX changes (removal of value=\"\" and mapping NONE_SENTINEL <-> \"\"), so full compliance with REQ-10/REQ-11 cannot be confirmed from the evidence shown.",
+  "missing_requirements": [
     {
-      "description": "Admin bootstrap via secret URL parameter (caffeineAdminToken) and backend initialization call _initializeAccessControlWithSecret",
-      "reason": "BuildRequest does not mention any secret-token based admin initialization/bootstrapping mechanism; only requires Internet Identity login with Admin/Staff roles managed by backend.",
+      "id": "REQ-10",
+      "requirement": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value for optional selects, while preserving the ability to clear the selection by setting Select value/state to an empty string.",
+      "reason": "While a sentinel utility is added and imported in relevant pages, the diff excerpts are truncated before the optional Select JSX. There is no visible evidence that all <SelectItem value=\"\"> usages were removed across the app, nor that a \"None\" SelectItem now uses the sentinel value instead of an empty string.",
       "evidence": [
-        "frontend/src/hooks/useActor.ts (reads `caffeineAdminToken` from URL and calls `actor._initializeAccessControlWithSecret(adminToken)`)"
+        "frontend/src/pages/candidates/CandidateCreatePage.tsx (truncated)",
+        "frontend/src/pages/candidates/CandidateEditPage.tsx (truncated)",
+        "frontend/src/pages/interviews/InterviewCreatePage.tsx (truncated)",
+        "frontend/src/pages/interviews/InterviewEditPage.tsx (truncated)",
+        "frontend/src/pages/jobs/JobCreatePage.tsx (truncated)",
+        "frontend/src/pages/jobs/JobEditPage.tsx (truncated)"
       ]
     },
     {
-      "description": "Caffeine.ai promotional footer link and branding",
-      "reason": "BuildRequest does not request any third-party attribution/footer link; this is additional UI behavior/content.",
+      "id": "REQ-11",
+      "requirement": "In the listed pages, implement an optional-select \"None\" option using the sentinel and map it to clearing component state (set field to \"\"), while preserving correct submission behavior (null when cleared).",
+      "reason": "The pages import NONE_SENTINEL/mapSelectToState/mapStateToSelect, but the provided excerpts do not show the optional Select implementations (jobOpeningId/clientId) or any onValueChange mapping logic that converts the sentinel to \"\" in state. Submission-to-null behavior is visible, but the UI mapping and \"None\" option behavior are not evidenced in the truncated diff.",
       "evidence": [
-        "frontend/src/components/AppLayout.tsx (footer includes link to `https://caffeine.ai/...` and marketing text)"
-      ]
-    },
-    {
-      "description": "Forced user profile setup dialog capturing name/email and storing a `role` field in profile data",
-      "reason": "BuildRequest requires roles stored by backend and default Staff unless set by Admin, but does not require collecting/storing name/email via a mandatory profile-setup modal before app use.",
-      "evidence": [
-        "frontend/src/components/ProfileSetupDialog.tsx",
-        "frontend/src/App.tsx (shows ProfileSetupDialog when profile is null)",
-        "backend/main.mo (defines `UserProfile` with `name`, `email`, `role`)"
-      ]
-    },
-    {
-      "description": "Theme/dark-mode infrastructure via `next-themes` import",
-      "reason": "BuildRequest asks for a consistent theme but does not request next-themes integration specifically; this appears to be extra implementation detail (and in the shown snippet, unused).",
-      "evidence": [
-        "frontend/src/App.tsx (imports `ThemeProvider` from `next-themes`)"
+        "frontend/src/pages/candidates/CandidateCreatePage.tsx (truncated)",
+        "frontend/src/pages/candidates/CandidateEditPage.tsx (truncated)",
+        "frontend/src/pages/interviews/InterviewCreatePage.tsx (truncated)",
+        "frontend/src/pages/interviews/InterviewEditPage.tsx (truncated)",
+        "frontend/src/pages/jobs/JobCreatePage.tsx (truncated)",
+        "frontend/src/pages/jobs/JobEditPage.tsx (truncated)"
       ]
     }
   ],
+  "hallucinated_features": [],
   "confidence": 0.56,
   "changed_files": [
-    "all_files_summary.json",
-    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/src/App.tsx",
-    "frontend/src/components/AccessDeniedScreen.tsx",
-    "frontend/src/components/AppHeader.tsx",
-    "frontend/src/components/AppLayout.tsx",
-    "frontend/src/components/AppSidebar.tsx",
-    "frontend/src/components/AuthGate.tsx",
-    "frontend/src/components/EmptyState.tsx",
-    "frontend/src/components/ProfileSetupDialog.tsx",
-    "frontend/src/hooks/queryKeys.ts",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
-    "frontend/src/main.tsx",
-    "frontend/src/pages/DashboardPage.tsx",
-    "frontend/src/pages/LoginPage.tsx",
     "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-    "frontend/src/pages/candidates/CandidateDetailPage.tsx",
     "frontend/src/pages/candidates/CandidateEditPage.tsx",
-    "frontend/src/pages/candidates/CandidatesListPage.tsx",
-    "frontend/src/pages/clients/ClientCreatePage.tsx",
-    "frontend/src/pages/clients/ClientDetailPage.tsx",
-    "frontend/src/pages/clients/ClientEditPage.tsx",
-    "frontend/src/pages/clients/ClientsListPage.tsx",
     "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-    "frontend/src/pages/interviews/InterviewDetailPage.tsx",
     "frontend/src/pages/interviews/InterviewEditPage.tsx",
-    "frontend/src/pages/interviews/InterviewsListPage.tsx",
     "frontend/src/pages/jobs/JobCreatePage.tsx",
-    "frontend/src/pages/jobs/JobDetailPage.tsx",
     "frontend/src/pages/jobs/JobEditPage.tsx",
-    "frontend/src/pages/jobs/JobsListPage.tsx",
-    "frontend/src/utils/urlParams.ts",
-    "frontend/tailwind.config.js",
+    "frontend/src/utils/optionalSelect.ts",
     "project_state.json"
   ]
 }

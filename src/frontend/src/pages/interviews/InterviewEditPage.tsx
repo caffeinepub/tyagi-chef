@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { ArrowLeft } from 'lucide-react';
 import { InterviewStatus, InterviewType } from '../../backend';
 import { toast } from 'sonner';
+import { NONE_SENTINEL, mapSelectToState, mapStateToSelect } from '../../utils/optionalSelect';
 
 export default function InterviewEditPage() {
   const navigate = useNavigate();
@@ -141,12 +142,15 @@ export default function InterviewEditPage() {
 
             <div className="space-y-2">
               <Label htmlFor="jobOpeningId">Job Opening (Optional)</Label>
-              <Select value={formData.jobOpeningId} onValueChange={(value) => setFormData({ ...formData, jobOpeningId: value })}>
+              <Select 
+                value={mapStateToSelect(formData.jobOpeningId)} 
+                onValueChange={(value) => setFormData({ ...formData, jobOpeningId: mapSelectToState(value) })}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a job" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value={NONE_SENTINEL}>None</SelectItem>
                   {jobs.map((job) => (
                     <SelectItem key={job.id.toString()} value={job.id.toString()}>
                       {job.title}

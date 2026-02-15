@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { NONE_SENTINEL, mapSelectToState, mapStateToSelect } from '../../utils/optionalSelect';
 
 export default function JobCreatePage() {
   const navigate = useNavigate();
@@ -114,12 +115,15 @@ export default function JobCreatePage() {
 
               <div className="space-y-2">
                 <Label htmlFor="clientId">Client (Optional)</Label>
-                <Select value={formData.clientId} onValueChange={(value) => setFormData({ ...formData, clientId: value })}>
+                <Select 
+                  value={mapStateToSelect(formData.clientId)} 
+                  onValueChange={(value) => setFormData({ ...formData, clientId: mapSelectToState(value) })}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a client" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value={NONE_SENTINEL}>None</SelectItem>
                     {clients.map((client) => (
                       <SelectItem key={client.id.toString()} value={client.id.toString()}>
                         {client.companyName}

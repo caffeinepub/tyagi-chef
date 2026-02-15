@@ -1,11 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 5,
   "summary": "Build a \"Tyagi Chef\" hospitality management app to manage job openings, candidates, interviews, and clients.",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Minimal modern logo mark (tyagi-chef-logo.dim_512x512.png)\n- App favicon icon derived from the logo style (tyagi-chef-favicon.dim_128x128.png)\n- Warm, professional hospitality staffing illustration (hospitality-staffing-illustration.dim_1600x900.png)",
+  "known_issues": [
+    "UI error: <Select.Item /> has an empty-string value prop; Select uses empty string to clear selection and show placeholder, so items must have non-empty values."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-implement-internet-identity-login-and-a-basic-role-model-for-access-control-at-minimum-admin-and-staff-so-authenticated-users-can-manage-job-openings-candidates-interviews-and-clients",
@@ -44,6 +45,22 @@
       "title": "Add static generated brand assets and wire them into the UI (app icon/favicon + login/empty-state illustration) by placing files under frontend/public/assets/generated and referencing them directly from the frontend.",
       "reqIds": [
         "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-all-selectitem-value-selectitem-usages-and-replace-them-with-a-non-empty-sentinel-value-e-g-none-for-optional-selects-job-client-candidate-linked-job-interview-job-opening-while-preserving-the-ability-to-clear-the-selection-and-show-the-placeholder-by-setting-the-select-value-to-an-empty-string",
+      "title": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value (e.g., \"__none__\") for optional selects (Job Client, Candidate Linked Job, Interview Job Opening) while preserving the ability to clear the selection and show the placeholder by setting the Select value to an empty string.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-optional-select-implementations-in-these-pages-to-use-the-sentinel-none-option-and-map-it-to-clearing-the-selection-empty-string-in-component-state-frontend-src-pages-candidates-candidatecreatepage-tsx-jobopeningid-frontend-src-pages-candidates-candidateeditpage-tsx-jobopeningid-frontend-src-pages-interviews-interviewcreatepage-tsx-jobopeningid-frontend-src-pages-interviews-intervieweditpage-tsx-jobopeningid-frontend-src-pages-jobs-jobcreatepage-tsx-clientid-frontend-src-pages-jobs-jobeditpage-tsx-clientid",
+      "title": "Update the optional-select implementations in these pages to use the sentinel \"None\" option and map it to clearing the selection (empty string) in component state: frontend/src/pages/candidates/CandidateCreatePage.tsx (jobOpeningId), frontend/src/pages/candidates/CandidateEditPage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewCreatePage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewEditPage.tsx (jobOpeningId), frontend/src/pages/jobs/JobCreatePage.tsx (clientId), frontend/src/pages/jobs/JobEditPage.tsx (clientId).",
+      "reqIds": [
+        "REQ-11"
       ],
       "version": 1
     }

@@ -2,51 +2,16 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-implement-internet-identity-login-and-a-basic-role-model-for-access-control-at-minimum-admin-and-staff-so-authenticated-users-can-manage-job-openings-candidates-interviews-and-clients",
-      "featureTitle": "Implement Internet Identity login and a basic role model for access control (at minimum: Admin and Staff) so authenticated users can manage job openings, candidates, interviews, and clients.",
+      "featureId": "feature-remove-all-selectitem-value-selectitem-usages-and-replace-them-with-a-non-empty-sentinel-value-e-g-none-for-optional-selects-job-client-candidate-linked-job-interview-job-opening-while-preserving-the-ability-to-clear-the-selection-and-show-the-placeholder-by-setting-the-select-value-to-an-empty-string",
+      "featureTitle": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value (e.g., \"__none__\") for optional selects (Job Client, Candidate Linked Job, Interview Job Opening) while preserving the ability to clear the selection and show the placeholder by setting the Select value to an empty string.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/AccessDeniedScreen.tsx",
-        "frontend/src/components/AppHeader.tsx",
-        "frontend/src/components/AuthGate.tsx",
-        "frontend/src/components/ProfileSetupDialog.tsx",
-        "frontend/src/pages/LoginPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-build-a-react-ui-with-navigation-for-jobs-candidates-interviews-and-clients-each-with-list-view-search-filters-create-form-edit-form-and-detail-view",
-      "featureTitle": "Build a React UI with navigation for Jobs, Candidates, Interviews, and Clients, each with: list view (search + filters), create form, edit form, and detail view.",
-      "files": [
-        "frontend/src/components/AppLayout.tsx",
-        "frontend/src/components/EmptyState.tsx",
         "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-        "frontend/src/pages/candidates/CandidateDetailPage.tsx",
         "frontend/src/pages/candidates/CandidateEditPage.tsx",
-        "frontend/src/pages/candidates/CandidatesListPage.tsx",
-        "frontend/src/pages/clients/ClientCreatePage.tsx",
-        "frontend/src/pages/clients/ClientDetailPage.tsx",
-        "frontend/src/pages/clients/ClientEditPage.tsx",
-        "frontend/src/pages/clients/ClientsListPage.tsx",
         "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-        "frontend/src/pages/interviews/InterviewDetailPage.tsx",
         "frontend/src/pages/interviews/InterviewEditPage.tsx",
-        "frontend/src/pages/interviews/InterviewsListPage.tsx",
         "frontend/src/pages/jobs/JobCreatePage.tsx",
-        "frontend/src/pages/jobs/JobDetailPage.tsx",
         "frontend/src/pages/jobs/JobEditPage.tsx",
-        "frontend/src/pages/jobs/JobsListPage.tsx"
+        "frontend/src/utils/optionalSelect.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -57,16 +22,20 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-6"
+        "REQ-10"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-dashboard-home-screen-that-summarizes-key-counts-e-g-open-jobs-new-candidates-interviews-scheduled-today-this-week-active-clients-and-provides-quick-links-to-create-a-new-job-candidate-interview-and-client",
-      "featureTitle": "Add a dashboard home screen that summarizes key counts (e.g., Open Jobs, New Candidates, Interviews Scheduled Today/This Week, Active Clients) and provides quick links to create a new Job, Candidate, Interview, and Client.",
+      "featureId": "feature-update-the-optional-select-implementations-in-these-pages-to-use-the-sentinel-none-option-and-map-it-to-clearing-the-selection-empty-string-in-component-state-frontend-src-pages-candidates-candidatecreatepage-tsx-jobopeningid-frontend-src-pages-candidates-candidateeditpage-tsx-jobopeningid-frontend-src-pages-interviews-interviewcreatepage-tsx-jobopeningid-frontend-src-pages-interviews-intervieweditpage-tsx-jobopeningid-frontend-src-pages-jobs-jobcreatepage-tsx-clientid-frontend-src-pages-jobs-jobeditpage-tsx-clientid",
+      "featureTitle": "Update the optional-select implementations in these pages to use the sentinel \"None\" option and map it to clearing the selection (empty string) in component state: frontend/src/pages/candidates/CandidateCreatePage.tsx (jobOpeningId), frontend/src/pages/candidates/CandidateEditPage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewCreatePage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewEditPage.tsx (jobOpeningId), frontend/src/pages/jobs/JobCreatePage.tsx (clientId), frontend/src/pages/jobs/JobEditPage.tsx (clientId).",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/DashboardPage.tsx"
+        "frontend/src/pages/candidates/CandidateCreatePage.tsx",
+        "frontend/src/pages/candidates/CandidateEditPage.tsx",
+        "frontend/src/pages/interviews/InterviewCreatePage.tsx",
+        "frontend/src/pages/interviews/InterviewEditPage.tsx",
+        "frontend/src/pages/jobs/JobCreatePage.tsx",
+        "frontend/src/pages/jobs/JobEditPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -77,50 +46,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-consistent-creative-visual-theme-and-layout-for-the-app-typography-spacing-components-and-color-palette-suitable-for-a-professional-hospitality-staffing-tool-avoid-blue-purple-as-primary-colors",
-      "featureTitle": "Implement consistent, creative visual theme and layout for the app (typography, spacing, components, and color palette) suitable for a professional hospitality staffing tool; avoid blue/purple as primary colors.",
-      "files": [
-        "frontend/index.css",
-        "frontend/src/components/AppLayout.tsx",
-        "frontend/src/main.tsx",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-static-generated-brand-assets-and-wire-them-into-the-ui-app-icon-favicon-login-empty-state-illustration-by-placing-files-under-frontend-public-assets-generated-and-referencing-them-directly-from-the-frontend",
-      "featureTitle": "Add static generated brand assets and wire them into the UI (app icon/favicon + login/empty-state illustration) by placing files under frontend/public/assets/generated and referencing them directly from the frontend.",
-      "files": [
-        "frontend/index.html",
-        "frontend/src/components/AppHeader.tsx",
-        "frontend/src/pages/LoginPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
+        "REQ-11"
       ],
       "confidence": "high"
     }

@@ -1,187 +1,60 @@
 {
   "kind": "build_request",
-  "title": "Tyagi Chef hospitality management app (jobs, candidates, interviews, clients)",
-  "priority": "normal",
+  "title": "Fix Shadcn SelectItem empty-string value errors for optional Select fields",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Implement Internet Identity login and a basic role model for access control (at minimum: Admin and Staff) so authenticated users can manage job openings, candidates, interviews, and clients.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "tyagi chef hospitality management ke liye - job opening,  candidate, interview, and client manage karney ke liye app chaiye"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can sign in and sign out with Internet Identity.",
-        "Backend stores a role for each principal (default to Staff unless set by an Admin).",
-        "Non-authenticated users cannot create/update/delete any records.",
-        "UI clearly shows the signed-in user and provides sign-out."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Create backend data models and CRUD APIs for Job Openings, including: title/role, client association (optional), location, salary/rate (optional), description/requirements, status (Open/Paused/Closed), createdAt/updatedAt.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "job opening ... manage karney ke liye app chaiye"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend exposes create/read/list/update/archive (or delete) operations for job openings.",
-        "Job openings can be filtered by status and searched by title/role.",
-        "All records include createdAt and updatedAt timestamps."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Create backend data models and CRUD APIs for Candidates, including: full name, phone/email, skills/notes, source, status (New/Screening/Interviewing/Offered/Placed/Rejected), and optional linkage to a Job Opening they are being considered for.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "candidate ... manage karney ke liye app chaiye"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend exposes create/read/list/update/archive (or delete) operations for candidates.",
-        "Candidates can be filtered by status and searched by name/contact.",
-        "A candidate can be linked/unlinked to a job opening."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Create backend data models and CRUD APIs for Interviews, including: candidate, job opening (optional if derived from candidate link), interview date/time, interview type (Phone/Video/In-person), interviewer name, location/meeting link, status (Scheduled/Completed/No-show/Cancelled), and outcome notes.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "interview ... manage karney ke liye app chaiye"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend exposes create/read/list/update/archive (or delete) operations for interviews.",
-        "Interviews can be listed by date range and filtered by status.",
-        "Interview records reference an existing candidate (required)."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Create backend data models and CRUD APIs for Clients, including: company name, contact person, phone/email, address (optional), notes, and status (Active/Inactive).",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "client manage karney ke liye app chaiye"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend exposes create/read/list/update/archive (or delete) operations for clients.",
-        "Clients can be searched by company name/contact.",
-        "Job openings can optionally reference a client."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Build a React UI with navigation for Jobs, Candidates, Interviews, and Clients, each with: list view (search + filters), create form, edit form, and detail view.",
+      "id": "REQ-10",
+      "text": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value (e.g., \"__none__\") for optional selects (Job Client, Candidate Linked Job, Interview Job Opening) while preserving the ability to clear the selection and show the placeholder by setting the Select value to an empty string.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
+        ],
+        "quotes": [
+          "A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder."
         ]
       },
       "acceptanceCriteria": [
-        "Users can navigate between the four main modules.",
-        "Each module supports create, view, edit, and remove/archive actions from the UI.",
-        "List views include search and at least one relevant filter (e.g., status).",
-        "Forms validate required fields and display user-friendly errors in English."
+        "No <SelectItem> in the app uses an empty string value prop.",
+        "Optional selects still provide a visible \"None\" option that clears the selection (internally sets Select value to \"\") so the placeholder is shown.",
+        "The runtime warning/error about empty-string SelectItem values no longer appears in the browser console."
       ]
     },
     {
-      "id": "REQ-7",
-      "text": "Add a dashboard home screen that summarizes key counts (e.g., Open Jobs, New Candidates, Interviews Scheduled Today/This Week, Active Clients) and provides quick links to create a new Job, Candidate, Interview, and Client.",
+      "id": "REQ-11",
+      "text": "Update the optional-select implementations in these pages to use the sentinel \"None\" option and map it to clearing the selection (empty string) in component state: frontend/src/pages/candidates/CandidateCreatePage.tsx (jobOpeningId), frontend/src/pages/candidates/CandidateEditPage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewCreatePage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewEditPage.tsx (jobOpeningId), frontend/src/pages/jobs/JobCreatePage.tsx (clientId), frontend/src/pages/jobs/JobEditPage.tsx (clientId).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
+        ],
+        "quotes": [
+          "A <Select.Item /> must have a value prop that is not an empty string."
         ]
       },
       "acceptanceCriteria": [
-        "Dashboard loads after login and shows at least 4 summary metrics.",
-        "Quick action buttons navigate to the relevant create forms.",
-        "Metrics update after creating/updating records (via React Query invalidation/refetch)."
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Implement consistent, creative visual theme and layout for the app (typography, spacing, components, and color palette) suitable for a professional hospitality staffing tool; avoid blue/purple as primary colors.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All screens share a consistent header/navigation and spacing system.",
-        "Theme uses a cohesive palette that is not primarily blue/purple.",
-        "UI uses Tailwind + existing component library composition patterns (no edits to immutable UI component sources)."
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Add static generated brand assets and wire them into the UI (app icon/favicon + login/empty-state illustration) by placing files under frontend/public/assets/generated and referencing them directly from the frontend.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Generated images are stored in frontend/public/assets/generated.",
-        "App displays the logo/icon in the header and uses the illustration on the sign-in or empty state screen.",
-        "No backend endpoints are used to serve these images."
+        "In each listed page, selecting \"None\" results in the relevant state field being set to \"\" (empty string).",
+        "Submitting each form with \"None\" selected continues to send null for the corresponding optional backend field (e.g., jobOpeningId/clientId/jobOpeningId).",
+        "Selecting a real entity value still sets the state field to that entity id string and submits correctly."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor (all logic in backend/main.mo).",
-    "Do not edit files under frontend/src/components/ui or other immutable paths; compose components instead.",
-    "Use English for all user-facing UI text."
+    "Do not modify any files under frontend/src/components/ui (these are read-only); fix usage at the page/component level instead."
   ],
   "nonGoals": [
-    "Payroll, invoicing, and accounting features are out of scope.",
-    "Real-time chat/notifications and email/SMS sending are out of scope.",
-    "Third-party auth providers other than Internet Identity are out of scope."
+    "Changing backend APIs or data models.",
+    "Changing the Select component implementation in the shadcn/ui layer beyond usage changes in pages."
   ],
   "imageRequirements": {
-    "required": [
-      "Minimal modern logo mark (tyagi-chef-logo.dim_512x512.png)",
-      "App favicon icon derived from the logo style (tyagi-chef-favicon.dim_128x128.png)",
-      "Warm, professional hospitality staffing illustration (hospitality-staffing-illustration.dim_1600x900.png)"
-    ],
+    "required": [],
     "edits": []
   },
   "userProfileUpdate": {
-    "goalsToAdd": [
-      "Build an app for Tyagi Chef to manage hospitality recruitment: job openings, candidates, interviews, and clients."
-    ],
+    "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [
-      "Use English for user-facing UI text."
-    ],
+    "preferencesToAdd": [],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

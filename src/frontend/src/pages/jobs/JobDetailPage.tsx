@@ -95,9 +95,15 @@ export default function JobDetailPage() {
               {client && (
                 <div className="flex items-start gap-3">
                   <Building2 className="h-5 w-5 text-muted-foreground mt-0.5" />
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium">Client</p>
-                    <p className="text-sm text-muted-foreground">{client.companyName}</p>
+                    <Button
+                      variant="link"
+                      className="h-auto p-0 text-sm text-muted-foreground hover:text-primary"
+                      onClick={() => navigate({ to: `/clients/${client.id}` })}
+                    >
+                      {client.companyName}
+                    </Button>
                   </div>
                 </div>
               )}
@@ -106,13 +112,6 @@ export default function JobDetailPage() {
                 <div>
                   <p className="text-sm font-medium">Created</p>
                   <p className="text-sm text-muted-foreground">{formatDate(job.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium">Last Updated</p>
-                  <p className="text-sm text-muted-foreground">{formatDate(job.updatedAt)}</p>
                 </div>
               </div>
             </CardContent>

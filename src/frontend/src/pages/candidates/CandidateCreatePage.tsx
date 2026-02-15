@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { useCreateCandidate, useGetAllJobOpenings } from '../../hooks/useQueries';
+import { useCreateCandidate, useGetAllJobOpenings, useGetCandidate } from '../../hooks/useQueries';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -111,7 +111,7 @@ export default function CandidateCreatePage() {
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="source">Source (Optional)</Label>
+                <Label htmlFor="source">Source</Label>
                 <Input
                   id="source"
                   value={formData.source}
@@ -126,8 +126,8 @@ export default function CandidateCreatePage() {
                   value={mapStateToSelect(formData.jobOpeningId)} 
                   onValueChange={(value) => setFormData({ ...formData, jobOpeningId: mapSelectToState(value) })}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a job" />
+                  <SelectTrigger id="jobOpeningId">
+                    <SelectValue placeholder="Select a job opening" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={NONE_SENTINEL}>None</SelectItem>
@@ -142,7 +142,7 @@ export default function CandidateCreatePage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="skills">Skills (Optional)</Label>
+              <Label htmlFor="skills">Skills</Label>
               <Textarea
                 id="skills"
                 value={formData.skills}
@@ -153,12 +153,12 @@ export default function CandidateCreatePage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes (Optional)</Label>
+              <Label htmlFor="notes">Notes</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Add any additional notes..."
+                placeholder="Additional notes about the candidate..."
                 rows={4}
               />
             </div>

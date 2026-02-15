@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T15:03:33.724Z",
+  "generatedAt": "2026-02-15T15:46:23.259Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,64 +11,47 @@
     "implemented": 2,
     "items": [
       {
-        "id": "REQ-10",
-        "summary": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value (e.g., \"__none__\") for optional selects (Job Client, Candidate Linked Job, Interview Job Opening) while preserving the ability to clear the selection and show the placeholder by setting the Select value to an empty string.",
+        "id": "REQ-19",
+        "summary": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/optionalSelect.ts",
-          "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "frontend/src/pages/candidates/CandidateEditPage.tsx",
-          "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-          "frontend/src/pages/interviews/InterviewEditPage.tsx",
-          "frontend/src/pages/jobs/JobCreatePage.tsx",
-          "frontend/src/pages/jobs/JobEditPage.tsx"
+          "frontend/src/utils/candidateStatusPresentation.ts",
+          "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/utils/optionalSelect.ts",
-          "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "frontend/src/pages/candidates/CandidateEditPage.tsx",
-          "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-          "frontend/src/pages/interviews/InterviewEditPage.tsx",
-          "frontend/src/pages/jobs/JobCreatePage.tsx",
-          "frontend/src/pages/jobs/JobEditPage.tsx"
+          "frontend/src/utils/candidateStatusPresentation.ts",
+          "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
         ]
       },
       {
-        "id": "REQ-11",
-        "summary": "Update the optional-select implementations in these pages to use the sentinel \"None\" option and map it to clearing the selection (empty string) in component state: frontend/src/pages/candidates/CandidateCreatePage.tsx (jobOpeningId), frontend/src/pages/candidates/CandidateEditPage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewCreatePage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewEditPage.tsx (jobOpeningId), frontend/src/pages/jobs/JobCreatePage.tsx (clientId), frontend/src/pages/jobs/JobEditPage.tsx (clientId).",
+        "id": "REQ-20",
+        "summary": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "frontend/src/pages/candidates/CandidateEditPage.tsx",
-          "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-          "frontend/src/pages/interviews/InterviewEditPage.tsx",
-          "frontend/src/pages/jobs/JobCreatePage.tsx",
-          "frontend/src/pages/jobs/JobEditPage.tsx"
+          "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
         ],
         "matchedFiles": [
           "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-          "frontend/src/pages/candidates/CandidateEditPage.tsx",
-          "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-          "frontend/src/pages/interviews/InterviewEditPage.tsx",
-          "frontend/src/pages/jobs/JobCreatePage.tsx",
-          "frontend/src/pages/jobs/JobEditPage.tsx"
+          "frontend/src/pages/candidates/CandidatesListPage.tsx",
+          "frontend/src/pages/candidates/CandidateDetailPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
-    "build-template/README.md",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-    "frontend/src/pages/candidates/CandidateEditPage.tsx",
-    "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-    "frontend/src/pages/interviews/InterviewEditPage.tsx",
-    "frontend/src/pages/jobs/JobCreatePage.tsx",
-    "frontend/src/pages/jobs/JobEditPage.tsx",
-    "frontend/src/utils/optionalSelect.ts",
+    "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+    "frontend/src/pages/candidates/CandidatesListPage.tsx",
+    "frontend/src/utils/candidateStatusPresentation.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

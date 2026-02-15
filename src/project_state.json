@@ -1,10 +1,14 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
+  "projectStateVersion": 13,
   "summary": "Build a \"Tyagi Chef\" hospitality management app to manage job openings, candidates, interviews, and clients.",
-  "architectural_notes": [],
+  "architectural_notes": [
+    "Ensure Job Opening stores a clientId reference to a Client (and expose it via CRUD APIs) so a Job Opening can be linked to a Client.",
+    "Extend Client data model/API to store staffing requirements (e.g., list of roles/positions needed, quantity, notes) and expose via Client CRUD and UI forms/detail views."
+  ],
   "known_issues": [
-    "UI error: <Select.Item /> has an empty-string value prop; Select uses empty string to clear selection and show placeholder, so items must have non-empty values."
+    "UI error: <Select.Item /> has an empty-string value prop; Select uses empty string to clear selection and show placeholder, so items must have non-empty values.",
+    "New Candidate flow runtime error: \"Cannot read properties of undefined (reading 'toUpperCase')\" occurs when creating a candidate (likely due to calling toUpperCase on an undefined field)."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -63,6 +67,78 @@
         "REQ-11"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-ensure-a-job-opening-can-be-linked-to-a-client-and-that-the-association-is-persisted-and-editable-end-to-end-frontend-forms-backend-detail-views",
+      "title": "Ensure a Job Opening can be linked to a Client and that the association is persisted and editable end-to-end (frontend forms -> backend -> detail views).",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-cross-navigation-between-clients-and-job-openings-where-a-link-exists",
+      "title": "Add cross-navigation between Clients and Job Openings where a link exists.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-show-job-openings-related-to-a-client-on-the-client-detail-page",
+      "title": "Show Job Openings related to a Client on the Client detail page.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-client-staffing-requirements-data-field-that-lets-users-record-which-staff-roles-positions-a-client-needs-and-persist-it-end-to-end-backend-storage-create-update-read",
+      "title": "Add a new \"Client staffing requirements\" data field that lets users record which staff roles/positions a client needs, and persist it end-to-end (backend storage + create/update + read).",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-clients-ui-to-allow-managing-client-staffing-requirements-on-create-and-edit-pages-and-display-them-on-the-client-detail-page-using-clear-english-labels-and-validation",
+      "title": "Update the Clients UI to allow managing client staffing requirements on Create and Edit pages, and display them on the Client Detail page using clear English labels and validation.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-react-query-hooks-and-generated-backend-type-usage-so-client-create-update-query-flows-include-the-staffing-requirements-field-and-continue-to-invalidate-refetch-client-queries-correctly",
+      "title": "Update frontend React Query hooks and generated backend type usage so client create/update/query flows include the staffing requirements field and continue to invalidate/refetch client queries correctly.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-identify-and-fix-the-runtime-ui-error-caused-by-using-an-empty-string-value-prop-on-shadcn-selectitem-select-item-has-an-empty-string-value-prop-by-removing-replacing-any-remaining-selectitem-value-selectitem-usages-across-the-frontend-and-ensuring-optional-selects-use-a-non-empty-sentinel-option-e-g-none-that-maps-to-an-empty-string-in-component-state-to-clear-the-selection",
+      "title": "Identify and fix the runtime UI error caused by using an empty-string value prop on shadcn <SelectItem /> (\"<Select.Item /> has an empty-string value prop\"), by removing/replacing any remaining <SelectItem value=\"\">…</SelectItem> usages across the frontend and ensuring optional Selects use a non-empty sentinel option (e.g., '__none__') that maps to an empty string in component state to clear the selection.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-new-candidate-flow-runtime-crash-cannot-read-properties-of-undefined-reading-touppercase-by-making-candidate-status-label-badge-rendering-resilient-to-missing-or-unexpected-status-values-e-g-undefined-in-all-candidate-ui-surfaces-that-call-touppercase-at-minimum-candidates-list-and-candidate-detail-pages",
+      "title": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-end-to-end-that-the-backend-always-returns-a-populated-status-for-candidate-records-created-via-createcandidate-and-if-any-data-inconsistencies-can-still-surface-in-the-frontend-e-g-legacy-records-or-decoding-edge-cases-ensure-the-frontend-gracefully-handles-them-without-runtime-errors",
+      "title": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -102,6 +178,18 @@
       "reqIds": [
         "REQ-5"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Link Clients to Job Openings (associate a Job Opening with a Client, including UI selection and backend relationship).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Add ability to record which staff roles/positions a Client needs (client staffing requirements), including UI and backend fields.",
+      "reqIds": [],
       "status": "pending"
     }
   ],

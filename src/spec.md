@@ -1,16 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Eliminate shadcn SelectItem empty-string value warnings for optional Select fields while keeping a working “None” option that clears the selection.
+**Goal:** Prevent the New Candidate flow from crashing due to calling `toUpperCase()` on a missing/undefined candidate status, and ensure status data is consistently populated for newly created candidates.
 
 **Planned changes:**
-- Replace any `<SelectItem value="">…</SelectItem>` used for optional selects with a non-empty sentinel value (e.g., `"__none__"`) and map that sentinel to setting the Select value/state to `""` to clear and show the placeholder.
-- Update optional Select implementations in the listed pages so selecting “None” clears the relevant state field (`jobOpeningId` / `clientId`) and selecting a real entity sets the id string:
-  - `frontend/src/pages/candidates/CandidateCreatePage.tsx`
-  - `frontend/src/pages/candidates/CandidateEditPage.tsx`
-  - `frontend/src/pages/interviews/InterviewCreatePage.tsx`
-  - `frontend/src/pages/interviews/InterviewEditPage.tsx`
-  - `frontend/src/pages/jobs/JobCreatePage.tsx`
-  - `frontend/src/pages/jobs/JobEditPage.tsx`
+- Update candidate status label/badge rendering to safely handle missing/unknown status values (avoid calling `toUpperCase()` on undefined) across candidate UI surfaces, at minimum Candidates list and Candidate detail pages.
+- Add/adjust frontend fallback behavior to display a safe English status label when status is missing/unknown.
+- Verify end-to-end that the backend returns a populated `status` for candidates created via `createCandidate`, and ensure frontend remains resilient to any legacy/inconsistent records.
 
-**User-visible outcome:** Optional dropdowns (Job Client, Candidate Linked Job, Interview Job Opening) can be set to a visible “None” option that clears the selection and shows the placeholder, without any empty-string SelectItem runtime warnings in the browser console.
+**User-visible outcome:** Creating a new candidate no longer crashes the UI, and candidate list/detail pages render safely even when a candidate’s status is missing or unexpected (showing a fallback label instead).

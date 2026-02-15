@@ -104,6 +104,19 @@ export function useGetJobOpening(id: bigint | undefined) {
   });
 }
 
+export function useGetJobOpeningsForClient(clientId: bigint | undefined) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<JobOpening[]>({
+    queryKey: queryKeys.jobs.forClient(clientId),
+    queryFn: async () => {
+      if (!actor || !clientId) return [];
+      return actor.getJobOpeningsForClient(clientId);
+    },
+    enabled: !!actor && !isFetching && !!clientId,
+  });
+}
+
 export function useCreateJobOpening() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -127,8 +140,11 @@ export function useCreateJobOpening() {
         data.requirements
       );
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.jobs.all });
+      if (variables.clientId) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.jobs.forClient(variables.clientId) });
+      }
     },
   });
 }
@@ -163,6 +179,9 @@ export function useUpdateJobOpening() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.jobs.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.jobs.detail(variables.id) });
+      if (variables.clientId) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.jobs.forClient(variables.clientId) });
+      }
     },
   });
 }
@@ -437,6 +456,7 @@ export function useCreateClient() {
       email: string;
       address: string;
       notes: string;
+      staffingRequirements: string[];
     }) => {
       if (!actor) throw new Error('Actor not available');
       return actor.createClient(
@@ -445,7 +465,8 @@ export function useCreateClient() {
         data.phone,
         data.email,
         data.address,
-        data.notes
+        data.notes,
+        data.staffingRequirements
       );
     },
     onSuccess: () => {
@@ -468,6 +489,7 @@ export function useUpdateClient() {
       address: string;
       notes: string;
       status: EntityStatus;
+      staffingRequirements: string[];
     }) => {
       if (!actor) throw new Error('Actor not available');
       return actor.updateClient(
@@ -478,7 +500,8 @@ export function useUpdateClient() {
         data.email,
         data.address,
         data.notes,
-        data.status
+        data.status,
+        data.staffingRequirements
       );
     },
     onSuccess: (_, variables) => {

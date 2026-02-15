@@ -1,51 +1,52 @@
 {
   "kind": "build_request",
-  "title": "Fix Shadcn SelectItem empty-string value errors for optional Select fields",
+  "title": "Fix New Candidate runtime error: Cannot read properties of undefined (reading 'toUpperCase')",
   "priority": "high",
   "requirements": [
     {
-      "id": "REQ-10",
-      "text": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value (e.g., \"__none__\") for optional selects (Job Client, Candidate Linked Job, Interview Job Opening) while preserving the ability to clear the selection and show the placeholder by setting the Select value to an empty string.",
+      "id": "REQ-19",
+      "text": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-6"
         ],
         "quotes": [
-          "A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder."
+          "new candidate me error aa rha hai- Cannot read properties of undefined (reading 'toUpperCase')"
         ]
       },
       "acceptanceCriteria": [
-        "No <SelectItem> in the app uses an empty string value prop.",
-        "Optional selects still provide a visible \"None\" option that clears the selection (internally sets Select value to \"\") so the placeholder is shown.",
-        "The runtime warning/error about empty-string SelectItem values no longer appears in the browser console."
+        "Creating a new candidate no longer crashes the UI.",
+        "CandidatesListPage and CandidateDetailPage do not call `toUpperCase()` on an undefined value (or otherwise throw) even if a candidate record has a missing/unknown status.",
+        "When status is missing/unknown, the UI shows a safe fallback label (English text) instead of crashing."
       ]
     },
     {
-      "id": "REQ-11",
-      "text": "Update the optional-select implementations in these pages to use the sentinel \"None\" option and map it to clearing the selection (empty string) in component state: frontend/src/pages/candidates/CandidateCreatePage.tsx (jobOpeningId), frontend/src/pages/candidates/CandidateEditPage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewCreatePage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewEditPage.tsx (jobOpeningId), frontend/src/pages/jobs/JobCreatePage.tsx (clientId), frontend/src/pages/jobs/JobEditPage.tsx (clientId).",
-      "target": "frontend",
+      "id": "REQ-20",
+      "text": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
+      "target": "both",
       "source": {
         "messageIds": [
           "msg-6"
         ],
         "quotes": [
-          "A <Select.Item /> must have a value prop that is not an empty string."
+          "new candidate me error aa rha hai- Cannot read properties of undefined (reading 'toUpperCase')"
         ]
       },
       "acceptanceCriteria": [
-        "In each listed page, selecting \"None\" results in the relevant state field being set to \"\" (empty string).",
-        "Submitting each form with \"None\" selected continues to send null for the corresponding optional backend field (e.g., jobOpeningId/clientId/jobOpeningId).",
-        "Selecting a real entity value still sets the state field to that entity id string and submits correctly."
+        "New candidates created via the UI have a non-empty status when fetched from the backend.",
+        "If any existing/legacy candidate data is missing status, the UI still renders candidate list/detail screens without errors."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/components/ui (these are read-only); fix usage at the page/component level instead."
+    "Do not edit files under frontend/src/components/ui (read-only).",
+    "Do not edit any files listed in frontend.immutablePaths (compose existing hooks/components instead).",
+    "Backend changes must respect the single-actor architecture (all Motoko logic in backend/main.mo). Create backend/migration.mo only if an upgrade is required to handle existing persisted state."
   ],
   "nonGoals": [
-    "Changing backend APIs or data models.",
-    "Changing the Select component implementation in the shadcn/ui layer beyond usage changes in pages."
+    "Do not add new candidate fields or change candidate business logic beyond what is required to prevent the runtime error.",
+    "Do not change the app visual theme or navigation as part of this fix."
   ],
   "imageRequirements": {
     "required": [],

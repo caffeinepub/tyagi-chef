@@ -32,6 +32,7 @@ export type CandidateStatus = { 'new' : null } |
 export interface Client {
   'id' : bigint,
   'status' : EntityStatus,
+  'staffingRequirements' : Array<string>,
   'createdAt' : bigint,
   'contactPerson' : string,
   'email' : string,
@@ -40,6 +41,10 @@ export interface Client {
   'notes' : string,
   'companyName' : string,
   'phone' : string,
+}
+export interface ClientWithJobOpenings {
+  'client' : Client,
+  'jobOpenings' : Array<JobOpening>,
 }
 export type EntityStatus = { 'active' : null } |
   { 'inactive' : null };
@@ -94,7 +99,7 @@ export interface _SERVICE {
     bigint
   >,
   'createClient' : ActorMethod<
-    [string, string, string, string, string, string],
+    [string, string, string, string, string, string, Array<string>],
     bigint
   >,
   'createInterview' : ActorMethod<
@@ -117,8 +122,10 @@ export interface _SERVICE {
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getCandidate' : ActorMethod<[bigint], Candidate>,
   'getClient' : ActorMethod<[bigint], Client>,
+  'getClientWithJobOpenings' : ActorMethod<[bigint], ClientWithJobOpenings>,
   'getInterview' : ActorMethod<[bigint], Interview>,
   'getJobOpening' : ActorMethod<[bigint], JobOpening>,
+  'getJobOpeningsForClient' : ActorMethod<[bigint], Array<JobOpening>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
@@ -137,7 +144,17 @@ export interface _SERVICE {
     undefined
   >,
   'updateClient' : ActorMethod<
-    [bigint, string, string, string, string, string, string, EntityStatus],
+    [
+      bigint,
+      string,
+      string,
+      string,
+      string,
+      string,
+      string,
+      EntityStatus,
+      Array<string>,
+    ],
     undefined
   >,
   'updateInterview' : ActorMethod<

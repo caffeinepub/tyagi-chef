@@ -2,16 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-all-selectitem-value-selectitem-usages-and-replace-them-with-a-non-empty-sentinel-value-e-g-none-for-optional-selects-job-client-candidate-linked-job-interview-job-opening-while-preserving-the-ability-to-clear-the-selection-and-show-the-placeholder-by-setting-the-select-value-to-an-empty-string",
-      "featureTitle": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value (e.g., \"__none__\") for optional selects (Job Client, Candidate Linked Job, Interview Job Opening) while preserving the ability to clear the selection and show the placeholder by setting the Select value to an empty string.",
+      "featureId": "feature-fix-the-new-candidate-flow-runtime-crash-cannot-read-properties-of-undefined-reading-touppercase-by-making-candidate-status-label-badge-rendering-resilient-to-missing-or-unexpected-status-values-e-g-undefined-in-all-candidate-ui-surfaces-that-call-touppercase-at-minimum-candidates-list-and-candidate-detail-pages",
+      "featureTitle": "Fix the New Candidate flow runtime crash \"Cannot read properties of undefined (reading 'toUpperCase')\" by making candidate status label/badge rendering resilient to missing or unexpected status values (e.g., undefined) in all candidate UI surfaces that call `toUpperCase()` (at minimum: Candidates list and Candidate detail pages).",
       "files": [
-        "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-        "frontend/src/pages/candidates/CandidateEditPage.tsx",
-        "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-        "frontend/src/pages/interviews/InterviewEditPage.tsx",
-        "frontend/src/pages/jobs/JobCreatePage.tsx",
-        "frontend/src/pages/jobs/JobEditPage.tsx",
-        "frontend/src/utils/optionalSelect.ts"
+        "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+        "frontend/src/pages/candidates/CandidatesListPage.tsx",
+        "frontend/src/utils/candidateStatusPresentation.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,20 +18,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-10"
+        "REQ-19"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-optional-select-implementations-in-these-pages-to-use-the-sentinel-none-option-and-map-it-to-clearing-the-selection-empty-string-in-component-state-frontend-src-pages-candidates-candidatecreatepage-tsx-jobopeningid-frontend-src-pages-candidates-candidateeditpage-tsx-jobopeningid-frontend-src-pages-interviews-interviewcreatepage-tsx-jobopeningid-frontend-src-pages-interviews-intervieweditpage-tsx-jobopeningid-frontend-src-pages-jobs-jobcreatepage-tsx-clientid-frontend-src-pages-jobs-jobeditpage-tsx-clientid",
-      "featureTitle": "Update the optional-select implementations in these pages to use the sentinel \"None\" option and map it to clearing the selection (empty string) in component state: frontend/src/pages/candidates/CandidateCreatePage.tsx (jobOpeningId), frontend/src/pages/candidates/CandidateEditPage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewCreatePage.tsx (jobOpeningId), frontend/src/pages/interviews/InterviewEditPage.tsx (jobOpeningId), frontend/src/pages/jobs/JobCreatePage.tsx (clientId), frontend/src/pages/jobs/JobEditPage.tsx (clientId).",
+      "featureId": "feature-verify-end-to-end-that-the-backend-always-returns-a-populated-status-for-candidate-records-created-via-createcandidate-and-if-any-data-inconsistencies-can-still-surface-in-the-frontend-e-g-legacy-records-or-decoding-edge-cases-ensure-the-frontend-gracefully-handles-them-without-runtime-errors",
+      "featureTitle": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`, and if any data inconsistencies can still surface in the frontend (e.g., legacy records or decoding edge cases), ensure the frontend gracefully handles them without runtime errors.",
       "files": [
         "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-        "frontend/src/pages/candidates/CandidateEditPage.tsx",
-        "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-        "frontend/src/pages/interviews/InterviewEditPage.tsx",
-        "frontend/src/pages/jobs/JobCreatePage.tsx",
-        "frontend/src/pages/jobs/JobEditPage.tsx"
+        "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+        "frontend/src/pages/candidates/CandidatesListPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -46,7 +39,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-11"
+        "REQ-20"
       ],
       "confidence": "high"
     }

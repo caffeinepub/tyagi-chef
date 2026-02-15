@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Badge } from '../../components/ui/badge';
 import { ArrowLeft, Edit, Mail, Phone, Briefcase, FileText, Calendar } from 'lucide-react';
 import { CandidateStatus } from '../../backend';
+import { getCandidateStatusPresentation } from '../../utils/candidateStatusPresentation';
 
 export default function CandidateDetailPage() {
   const navigate = useNavigate();
@@ -20,16 +21,8 @@ export default function CandidateDetailPage() {
     return <div className="text-center py-12">Candidate not found</div>;
   }
 
-  const getStatusBadge = (status: CandidateStatus) => {
-    const config: Record<string, { variant: 'default' | 'secondary' | 'destructive'; label: string }> = {
-      new_: { variant: 'default', label: 'NEW' },
-      screening: { variant: 'secondary', label: 'SCREENING' },
-      interviewing: { variant: 'default', label: 'INTERVIEWING' },
-      offered: { variant: 'default', label: 'OFFERED' },
-      placed: { variant: 'default', label: 'PLACED' },
-      rejected: { variant: 'destructive', label: 'REJECTED' },
-    };
-    const { variant, label } = config[status] || { variant: 'default', label: status.toUpperCase() };
+  const getStatusBadge = (status: CandidateStatus | undefined) => {
+    const { variant, label } = getCandidateStatusPresentation(status);
     return <Badge variant={variant}>{label}</Badge>;
   };
 

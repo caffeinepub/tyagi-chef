@@ -1,47 +1,27 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T15:03:33.721Z",
-  "summary": "The diff adds a reusable optional-select utility with a non-empty sentinel value and updates the six specified pages to import it, while keeping optional submit behavior (sending null when state is empty string). However, the provided (truncated) page diffs do not show the actual Select/SelectItem JSX changes (removal of value=\"\" and mapping NONE_SENTINEL <-> \"\"), so full compliance with REQ-10/REQ-11 cannot be confirmed from the evidence shown.",
+  "generatedAt": "2026-02-15T15:46:23.256Z",
+  "summary": "Frontend candidate status badge/label rendering was made resilient to undefined/unknown status values by introducing a safe presentation helper and using it in CandidatesListPage and CandidateDetailPage, preventing `toUpperCase()` crashes there. However, the diff summary does not provide evidence that the backend `createCandidate` path always persists/returns a populated `status` for newly created candidates (REQ-20 backend portion).",
   "missing_requirements": [
     {
-      "id": "REQ-10",
-      "requirement": "Remove all <SelectItem value=\"\">…</SelectItem> usages and replace them with a non-empty sentinel value for optional selects, while preserving the ability to clear the selection by setting Select value/state to an empty string.",
-      "reason": "While a sentinel utility is added and imported in relevant pages, the diff excerpts are truncated before the optional Select JSX. There is no visible evidence that all <SelectItem value=\"\"> usages were removed across the app, nor that a \"None\" SelectItem now uses the sentinel value instead of an empty string.",
+      "id": "REQ-20",
+      "requirement": "Verify end-to-end that the backend always returns a populated `status` for `Candidate` records created via `createCandidate`.",
+      "reason": "The diff summary shows only type definitions in `backend/main.mo` (truncated) and does not include any changes or evidence in the `createCandidate` implementation ensuring `status` is always set/populated for newly created candidates.",
       "evidence": [
-        "frontend/src/pages/candidates/CandidateCreatePage.tsx (truncated)",
-        "frontend/src/pages/candidates/CandidateEditPage.tsx (truncated)",
-        "frontend/src/pages/interviews/InterviewCreatePage.tsx (truncated)",
-        "frontend/src/pages/interviews/InterviewEditPage.tsx (truncated)",
-        "frontend/src/pages/jobs/JobCreatePage.tsx (truncated)",
-        "frontend/src/pages/jobs/JobEditPage.tsx (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "requirement": "In the listed pages, implement an optional-select \"None\" option using the sentinel and map it to clearing component state (set field to \"\"), while preserving correct submission behavior (null when cleared).",
-      "reason": "The pages import NONE_SENTINEL/mapSelectToState/mapStateToSelect, but the provided excerpts do not show the optional Select implementations (jobOpeningId/clientId) or any onValueChange mapping logic that converts the sentinel to \"\" in state. Submission-to-null behavior is visible, but the UI mapping and \"None\" option behavior are not evidenced in the truncated diff.",
-      "evidence": [
-        "frontend/src/pages/candidates/CandidateCreatePage.tsx (truncated)",
-        "frontend/src/pages/candidates/CandidateEditPage.tsx (truncated)",
-        "frontend/src/pages/interviews/InterviewCreatePage.tsx (truncated)",
-        "frontend/src/pages/interviews/InterviewEditPage.tsx (truncated)",
-        "frontend/src/pages/jobs/JobCreatePage.tsx (truncated)",
-        "frontend/src/pages/jobs/JobEditPage.tsx (truncated)"
+        "backend/main.mo"
       ]
     }
   ],
   "hallucinated_features": [],
-  "confidence": 0.56,
+  "confidence": 0.62,
   "changed_files": [
+    "backend/main.mo",
     "frontend-file-summaries.txt",
     "frontend/src/pages/candidates/CandidateCreatePage.tsx",
-    "frontend/src/pages/candidates/CandidateEditPage.tsx",
-    "frontend/src/pages/interviews/InterviewCreatePage.tsx",
-    "frontend/src/pages/interviews/InterviewEditPage.tsx",
-    "frontend/src/pages/jobs/JobCreatePage.tsx",
-    "frontend/src/pages/jobs/JobEditPage.tsx",
-    "frontend/src/utils/optionalSelect.ts",
+    "frontend/src/pages/candidates/CandidateDetailPage.tsx",
+    "frontend/src/pages/candidates/CandidatesListPage.tsx",
+    "frontend/src/utils/candidateStatusPresentation.ts",
     "project_state.json"
   ]
 }

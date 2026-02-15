@@ -1,15 +1,19 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { useGetClient } from '../../hooks/useQueries';
+import { useGetClient, useGetJobOpeningsForClient } from '../../hooks/useQueries';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
-import { ArrowLeft, Edit, Mail, Phone, MapPin, Building2, Calendar } from 'lucide-react';
-import { EntityStatus } from '../../backend';
+import { ArrowLeft, Edit, Mail, Phone, MapPin, Building2, Calendar, Briefcase } from 'lucide-react';
+import { EntityStatus, JobStatus } from '../../backend';
+import StaffingRequirementsTable from './components/StaffingRequirementsTable';
 
 export default function ClientDetailPage() {
   const navigate = useNavigate();
   const { clientId } = useParams({ strict: false });
   const { data: client, isLoading } = useGetClient(clientId ? BigInt(clientId) : undefined);
+  const { data: jobOpenings = [], isLoading: jobsLoading } = useGetJobOpeningsForClient(
+    clientId ? BigInt(clientId) : undefined
+  );
 
   if (isLoading) {
     return <div className="text-center py-12">Loading client details...</div>;
@@ -23,6 +27,15 @@ export default function ClientDetailPage() {
     const variants: Record<string, 'default' | 'secondary'> = {
       active: 'default',
       inactive: 'secondary',
+    };
+    return <Badge variant={variants[status] || 'default'}>{status.toUpperCase()}</Badge>;
+  };
+
+  const getJobStatusBadge = (status: JobStatus) => {
+    const variants: Record<string, 'default' | 'secondary' | 'destructive'> = {
+      open: 'default',
+      paused: 'secondary',
+      closed: 'destructive',
     };
     return <Badge variant={variants[status] || 'default'}>{status.toUpperCase()}</Badge>;
   };
@@ -113,6 +126,62 @@ export default function ClientDetailPage() {
           </Card>
         </div>
       </div>
+
+      <StaffingRequirementsTable requirements={client.staffingRequirements || []} />
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Briefcase className="h-5 w-5" />
+              <CardTitle>Related Job Openings</CardTitle>
+            </div>
+            <Badge variant="secondary">{jobOpenings.length}</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {jobsLoading ? (
+            <div className="text-center py-8 text-muted-foreground">Loading job openings...</div>
+          ) : jobOpenings.length === 0 ? (
+            <div className="text-center py-12">
+              <Briefcase className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Job Openings</h3>
+              <p className="text-muted-foreground mb-4">
+                This client doesn't have any linked job openings yet.
+              </p>
+              <Button onClick={() => navigate({ to: '/jobs/new' })}>Create Job Opening</Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {jobOpenings.map((job) => (
+                <Button
+                  key={job.id.toString()}
+                  variant="outline"
+                  className="w-full justify-start h-auto py-4 px-4"
+                  onClick={() => navigate({ to: `/jobs/${job.id}` })}
+                >
+                  <div className="flex items-start justify-between w-full gap-4">
+                    <div className="flex-1 text-left">
+                      <div className="font-semibold mb-1">{job.title}</div>
+                      <div className="text-sm text-muted-foreground flex items-center gap-2">
+                        <MapPin className="h-3 w-3" />
+                        {job.location}
+                        {job.salary && (
+                          <>
+                            <span>•</span>
+                            {job.salary}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0">{getJobStatusBadge(job.status)}</div>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

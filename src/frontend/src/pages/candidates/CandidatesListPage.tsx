@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../../components/ui/alert-dialog';
+import { getCandidateStatusPresentation } from '../../utils/candidateStatusPresentation';
 
 export default function CandidatesListPage() {
   const navigate = useNavigate();
@@ -38,16 +39,8 @@ export default function CandidatesListPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusBadge = (status: CandidateStatus) => {
-    const config: Record<string, { variant: 'default' | 'secondary' | 'destructive'; label: string }> = {
-      new_: { variant: 'default', label: 'NEW' },
-      screening: { variant: 'secondary', label: 'SCREENING' },
-      interviewing: { variant: 'default', label: 'INTERVIEWING' },
-      offered: { variant: 'default', label: 'OFFERED' },
-      placed: { variant: 'default', label: 'PLACED' },
-      rejected: { variant: 'destructive', label: 'REJECTED' },
-    };
-    const { variant, label } = config[status] || { variant: 'default', label: status.toUpperCase() };
+  const getStatusBadge = (status: CandidateStatus | undefined) => {
+    const { variant, label } = getCandidateStatusPresentation(status);
     return <Badge variant={variant}>{label}</Badge>;
   };
 

@@ -1,11 +1,12 @@
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
-import Text "mo:core/Text";
-import Time "mo:core/Time";
-import Order "mo:core/Order";
 import Array "mo:core/Array";
-import Runtime "mo:core/Runtime";
+import Iter "mo:core/Iter";
 import Principal "mo:core/Principal";
+import Time "mo:core/Time";
+import Runtime "mo:core/Runtime";
+import Order "mo:core/Order";
+import Text "mo:core/Text";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
@@ -69,12 +70,19 @@ actor {
     status : EntityStatus;
     createdAt : Int;
     updatedAt : Int;
+    staffingRequirements : [Text];
   };
 
   public type UserProfile = {
     name : Text;
     email : Text;
     role : Text;
+  };
+
+  // New composite type
+  public type ClientWithJobOpenings = {
+    client : Client;
+    jobOpenings : [JobOpening];
   };
 
   // State management
@@ -144,6 +152,17 @@ actor {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can create job openings");
     };
+
+    // Validate clientId exists if provided
+    switch (clientId) {
+      case (?cId) {
+        if (not clients.containsKey(cId)) {
+          Runtime.trap("Invalid client ID");
+        };
+      };
+      case (null) {};
+    };
+
     let id = nextJobOpeningId;
     let now = Time.now();
     let jobOpening : JobOpening = {
@@ -184,6 +203,17 @@ actor {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can update job openings");
     };
+
+    // Validate clientId exists if provided
+    switch (clientId) {
+      case (?cId) {
+        if (not clients.containsKey(cId)) {
+          Runtime.trap("Invalid client ID");
+        };
+      };
+      case (null) {};
+    };
+
     switch (jobOpenings.get(id)) {
       case (null) { Runtime.trap("Job opening not found") };
       case (?existing) {
@@ -212,11 +242,37 @@ actor {
     jobOpenings.remove(id);
   };
 
+  public query ({ caller }) func getJobOpeningsForClient(clientId : Nat) : async [JobOpening] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only staff can view job openings");
+    };
+
+    // Validate client exists
+    if (not clients.containsKey(clientId)) {
+      Runtime.trap("Client not found");
+    };
+
+    jobOpenings.values().toArray().filter(
+      func(j) { switch (j.clientId) { case (null) { false }; case (?cId) { cId == clientId } } }
+    ).sort(JobOpening.compareByUpdatedAt);
+  };
+
   // Candidate API
   public shared ({ caller }) func createCandidate(fullName : Text, phone : Text, email : Text, skills : Text, notes : Text, source : Text, jobOpeningId : ?Nat) : async Nat {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can create candidates");
     };
+
+    // Validate jobOpeningId exists if provided
+    switch (jobOpeningId) {
+      case (?jId) {
+        if (not jobOpenings.containsKey(jId)) {
+          Runtime.trap("Invalid job opening ID");
+        };
+      };
+      case (null) {};
+    };
+
     let id = nextCandidateId;
     let now = Time.now();
     let candidate : Candidate = {
@@ -258,6 +314,17 @@ actor {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can update candidates");
     };
+
+    // Validate jobOpeningId exists if provided
+    switch (jobOpeningId) {
+      case (?jId) {
+        if (not jobOpenings.containsKey(jId)) {
+          Runtime.trap("Invalid job opening ID");
+        };
+      };
+      case (null) {};
+    };
+
     switch (candidates.get(id)) {
       case (null) { Runtime.trap("Candidate not found") };
       case (?existing) {
@@ -292,6 +359,22 @@ actor {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can create interviews");
     };
+
+    // Validate candidateId exists
+    if (not candidates.containsKey(candidateId)) {
+      Runtime.trap("Invalid candidate ID");
+    };
+
+    // Validate jobOpeningId exists if provided
+    switch (jobOpeningId) {
+      case (?jId) {
+        if (not jobOpenings.containsKey(jId)) {
+          Runtime.trap("Invalid job opening ID");
+        };
+      };
+      case (null) {};
+    };
+
     let id = nextInterviewId;
     let now = Time.now();
     let interview : Interview = {
@@ -333,6 +416,22 @@ actor {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can update interviews");
     };
+
+    // Validate candidateId exists
+    if (not candidates.containsKey(candidateId)) {
+      Runtime.trap("Invalid candidate ID");
+    };
+
+    // Validate jobOpeningId exists if provided
+    switch (jobOpeningId) {
+      case (?jId) {
+        if (not jobOpenings.containsKey(jId)) {
+          Runtime.trap("Invalid job opening ID");
+        };
+      };
+      case (null) {};
+    };
+
     switch (interviews.get(id)) {
       case (null) { Runtime.trap("Interview not found") };
       case (?existing) {
@@ -363,7 +462,7 @@ actor {
   };
 
   // Client API
-  public shared ({ caller }) func createClient(companyName : Text, contactPerson : Text, phone : Text, email : Text, address : Text, notes : Text) : async Nat {
+  public shared ({ caller }) func createClient(companyName : Text, contactPerson : Text, phone : Text, email : Text, address : Text, notes : Text, staffingRequirements : [Text]) : async Nat {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can create clients");
     };
@@ -380,6 +479,7 @@ actor {
       status = #active;
       createdAt = now;
       updatedAt = now;
+      staffingRequirements;
     };
     clients.add(id, client);
     nextClientId += 1;
@@ -403,7 +503,7 @@ actor {
     clients.values().toArray().sort(Client.compareByUpdatedAt);
   };
 
-  public shared ({ caller }) func updateClient(id : Nat, companyName : Text, contactPerson : Text, phone : Text, email : Text, address : Text, notes : Text, status : EntityStatus) : async () {
+  public shared ({ caller }) func updateClient(id : Nat, companyName : Text, contactPerson : Text, phone : Text, email : Text, address : Text, notes : Text, status : EntityStatus, staffingRequirements : [Text]) : async () {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only staff can update clients");
     };
@@ -421,6 +521,7 @@ actor {
           status;
           createdAt = existing.createdAt;
           updatedAt = Time.now();
+          staffingRequirements;
         };
         clients.add(id, updatedClient);
       };
@@ -433,5 +534,27 @@ actor {
     };
     if (not clients.containsKey(id)) { Runtime.trap("Client not found") };
     clients.remove(id);
+  };
+
+  public query ({ caller }) func getClientWithJobOpenings(id : Nat) : async ClientWithJobOpenings {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only staff can view clients");
+    };
+
+    let client = switch (clients.get(id)) {
+      case (null) { Runtime.trap("Client not found") };
+      case (?client) { client };
+    };
+
+    let jobs = jobOpenings.values().toArray().filter(
+      func(j) {
+        switch (j.clientId) {
+          case (null) { false };
+          case (?cId) { cId == id };
+        };
+      }
+    );
+
+    { client; jobOpenings = jobs };
   };
 };

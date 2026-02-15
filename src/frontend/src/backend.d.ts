@@ -48,6 +48,7 @@ export interface JobOpening {
 export interface Client {
     id: bigint;
     status: EntityStatus;
+    staffingRequirements: Array<string>;
     createdAt: bigint;
     contactPerson: string;
     email: string;
@@ -56,6 +57,10 @@ export interface Client {
     notes: string;
     companyName: string;
     phone: string;
+}
+export interface ClientWithJobOpenings {
+    client: Client;
+    jobOpenings: Array<JobOpening>;
 }
 export interface UserProfile {
     name: string;
@@ -98,7 +103,7 @@ export enum UserRole {
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createCandidate(fullName: string, phone: string, email: string, skills: string, notes: string, source: string, jobOpeningId: bigint | null): Promise<bigint>;
-    createClient(companyName: string, contactPerson: string, phone: string, email: string, address: string, notes: string): Promise<bigint>;
+    createClient(companyName: string, contactPerson: string, phone: string, email: string, address: string, notes: string, staffingRequirements: Array<string>): Promise<bigint>;
     createInterview(candidateId: bigint, jobOpeningId: bigint | null, interviewDate: bigint, interviewType: InterviewType, interviewerName: string, location: string): Promise<bigint>;
     createJobOpening(title: string, clientId: bigint | null, location: string, salary: string | null, description: string, requirements: string): Promise<bigint>;
     deleteCandidate(id: bigint): Promise<void>;
@@ -113,13 +118,15 @@ export interface backendInterface {
     getCallerUserRole(): Promise<UserRole>;
     getCandidate(id: bigint): Promise<Candidate>;
     getClient(id: bigint): Promise<Client>;
+    getClientWithJobOpenings(id: bigint): Promise<ClientWithJobOpenings>;
     getInterview(id: bigint): Promise<Interview>;
     getJobOpening(id: bigint): Promise<JobOpening>;
+    getJobOpeningsForClient(clientId: bigint): Promise<Array<JobOpening>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateCandidate(id: bigint, fullName: string, phone: string, email: string, skills: string, notes: string, source: string, status: CandidateStatus, jobOpeningId: bigint | null): Promise<void>;
-    updateClient(id: bigint, companyName: string, contactPerson: string, phone: string, email: string, address: string, notes: string, status: EntityStatus): Promise<void>;
+    updateClient(id: bigint, companyName: string, contactPerson: string, phone: string, email: string, address: string, notes: string, status: EntityStatus, staffingRequirements: Array<string>): Promise<void>;
     updateInterview(id: bigint, candidateId: bigint, jobOpeningId: bigint | null, interviewDate: bigint, interviewType: InterviewType, interviewerName: string, location: string, status: InterviewStatus, outcome: string): Promise<void>;
     updateJobOpening(id: bigint, title: string, clientId: bigint | null, location: string, salary: string | null, description: string, requirements: string, status: JobStatus): Promise<void>;
 }

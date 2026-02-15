@@ -8,6 +8,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import StaffingRequirementsEditor from './components/StaffingRequirementsEditor';
 
 export default function ClientCreatePage() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function ClientCreatePage() {
     email: '',
     address: '',
     notes: '',
+    staffingRequirements: [] as string[],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +44,11 @@ export default function ClientCreatePage() {
       return;
     }
 
+    // Validate staffing requirements - filter out empty strings
+    const validRequirements = formData.staffingRequirements
+      .map((req) => req.trim())
+      .filter((req) => req.length > 0);
+
     try {
       const clientId = await createClient.mutateAsync({
         companyName: formData.companyName.trim(),
@@ -50,6 +57,7 @@ export default function ClientCreatePage() {
         email: formData.email.trim(),
         address: formData.address.trim(),
         notes: formData.notes.trim(),
+        staffingRequirements: validRequirements,
       });
       toast.success('Client created successfully');
       navigate({ to: `/clients/${clientId}` });
@@ -119,32 +127,37 @@ export default function ClientCreatePage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="e.g., contact@company.com"
+                  placeholder="e.g., contact@grandhotel.com"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Address (Optional)</Label>
+              <Label htmlFor="address">Address</Label>
               <Input
                 id="address"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                placeholder="e.g., 123 Main St, New York, NY 10001"
+                placeholder="e.g., 123 Main Street, City, State"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes (Optional)</Label>
+              <Label htmlFor="notes">Notes</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Add any additional notes..."
+                placeholder="Additional information about the client..."
                 rows={4}
               />
             </div>
+
+            <StaffingRequirementsEditor
+              requirements={formData.staffingRequirements}
+              onChange={(requirements) => setFormData({ ...formData, staffingRequirements: requirements })}
+            />
 
             <div className="flex gap-4">
               <Button type="submit" disabled={createClient.isPending}>

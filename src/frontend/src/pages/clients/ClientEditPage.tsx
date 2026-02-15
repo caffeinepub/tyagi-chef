@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { ArrowLeft } from 'lucide-react';
 import { EntityStatus } from '../../backend';
 import { toast } from 'sonner';
+import StaffingRequirementsEditor from './components/StaffingRequirementsEditor';
 
 export default function ClientEditPage() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function ClientEditPage() {
     address: '',
     notes: '',
     status: 'active' as EntityStatus,
+    staffingRequirements: [] as string[],
   });
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function ClientEditPage() {
         address: client.address,
         notes: client.notes,
         status: client.status,
+        staffingRequirements: client.staffingRequirements || [],
       });
     }
   }, [client]);
@@ -63,6 +66,11 @@ export default function ClientEditPage() {
       return;
     }
 
+    // Validate staffing requirements - filter out empty strings
+    const validRequirements = formData.staffingRequirements
+      .map((req) => req.trim())
+      .filter((req) => req.length > 0);
+
     try {
       await updateClient.mutateAsync({
         id: client.id,
@@ -73,6 +81,7 @@ export default function ClientEditPage() {
         address: formData.address.trim(),
         notes: formData.notes.trim(),
         status: formData.status,
+        staffingRequirements: validRequirements,
       });
       toast.success('Client updated successfully');
       navigate({ to: `/clients/${client.id}` });
@@ -183,6 +192,11 @@ export default function ClientEditPage() {
                 rows={4}
               />
             </div>
+
+            <StaffingRequirementsEditor
+              requirements={formData.staffingRequirements}
+              onChange={(requirements) => setFormData({ ...formData, staffingRequirements: requirements })}
+            />
 
             <div className="flex gap-4">
               <Button type="submit" disabled={updateClient.isPending}>

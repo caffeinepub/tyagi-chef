@@ -5,6 +5,7 @@ export const queryKeys = {
   jobs: {
     all: ['jobs'],
     detail: (id: bigint | undefined) => ['jobs', id?.toString()],
+    forClient: (clientId: bigint | undefined) => ['jobs', 'client', clientId?.toString()],
   },
   candidates: {
     all: ['candidates'],

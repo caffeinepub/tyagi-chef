@@ -46,6 +46,7 @@ export const EntityStatus = IDL.Variant({
 export const Client = IDL.Record({
   'id' : IDL.Nat,
   'status' : EntityStatus,
+  'staffingRequirements' : IDL.Vec(IDL.Text),
   'createdAt' : IDL.Int,
   'contactPerson' : IDL.Text,
   'email' : IDL.Text,
@@ -96,6 +97,10 @@ export const UserProfile = IDL.Record({
   'role' : IDL.Text,
   'email' : IDL.Text,
 });
+export const ClientWithJobOpenings = IDL.Record({
+  'client' : Client,
+  'jobOpenings' : IDL.Vec(JobOpening),
+});
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -114,7 +119,15 @@ export const idlService = IDL.Service({
       [],
     ),
   'createClient' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Vec(IDL.Text),
+      ],
       [IDL.Nat],
       [],
     ),
@@ -147,8 +160,18 @@ export const idlService = IDL.Service({
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getCandidate' : IDL.Func([IDL.Nat], [Candidate], ['query']),
   'getClient' : IDL.Func([IDL.Nat], [Client], ['query']),
+  'getClientWithJobOpenings' : IDL.Func(
+      [IDL.Nat],
+      [ClientWithJobOpenings],
+      ['query'],
+    ),
   'getInterview' : IDL.Func([IDL.Nat], [Interview], ['query']),
   'getJobOpening' : IDL.Func([IDL.Nat], [JobOpening], ['query']),
+  'getJobOpeningsForClient' : IDL.Func(
+      [IDL.Nat],
+      [IDL.Vec(JobOpening)],
+      ['query'],
+    ),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -181,6 +204,7 @@ export const idlService = IDL.Service({
         IDL.Text,
         IDL.Text,
         EntityStatus,
+        IDL.Vec(IDL.Text),
       ],
       [],
       [],
@@ -257,6 +281,7 @@ export const idlFactory = ({ IDL }) => {
   const Client = IDL.Record({
     'id' : IDL.Nat,
     'status' : EntityStatus,
+    'staffingRequirements' : IDL.Vec(IDL.Text),
     'createdAt' : IDL.Int,
     'contactPerson' : IDL.Text,
     'email' : IDL.Text,
@@ -307,6 +332,10 @@ export const idlFactory = ({ IDL }) => {
     'role' : IDL.Text,
     'email' : IDL.Text,
   });
+  const ClientWithJobOpenings = IDL.Record({
+    'client' : Client,
+    'jobOpenings' : IDL.Vec(JobOpening),
+  });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -325,7 +354,15 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'createClient' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Vec(IDL.Text),
+        ],
         [IDL.Nat],
         [],
       ),
@@ -358,8 +395,18 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getCandidate' : IDL.Func([IDL.Nat], [Candidate], ['query']),
     'getClient' : IDL.Func([IDL.Nat], [Client], ['query']),
+    'getClientWithJobOpenings' : IDL.Func(
+        [IDL.Nat],
+        [ClientWithJobOpenings],
+        ['query'],
+      ),
     'getInterview' : IDL.Func([IDL.Nat], [Interview], ['query']),
     'getJobOpening' : IDL.Func([IDL.Nat], [JobOpening], ['query']),
+    'getJobOpeningsForClient' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Vec(JobOpening)],
+        ['query'],
+      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -392,6 +439,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Text,
           IDL.Text,
           EntityStatus,
+          IDL.Vec(IDL.Text),
         ],
         [],
         [],
